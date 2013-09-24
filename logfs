@@ -1,0 +1,3 @@
+#!/bin/bash
+
+(echo; date; df -HP | egrep 'lmi-terastation.*share$|schiz' | awk '{ print $5 " " $1 }') >> /projects/schiz/log/df_filesystems.log

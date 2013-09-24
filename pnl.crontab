@@ -1,6 +1,10 @@
-30 20 * * 7 /usr/bin/perl /projects/schiz/software/scripts/utils/cronjob_scripts/schizSize.pl /projects/schiz/log/diskspace/monitor_du_schiz.log /projects/schiz/
-00 22 * * 7 /usr/bin/perl /projects/schiz/software/scripts/utils/cronjob_scripts/schizSize_depth.pl /projects/schiz/log/diskspace/monitor_du_people.log 1 /projects/schiz/ra /projects/schiz/guest/ /projects/schiz/pi/
-00 23 * * 7 /usr/bin/perl /projects/schiz/software/scripts/utils/cronjob_scripts/schizSize_depth.pl /projects/schiz/log/diskspace/monitor_all_finer.log 3 /projects/schiz/
-00 15 * * * python /projects/schiz/software/scripts/utils/hosts/hostlist users
-00 07 * * 1 python /projects/schiz/software/bin/schizquota -w | mailx -s 'automated disk space' reckbo@bwh.harvard.edu
-00 13 * * 1 /projects/schiz/software/bin/wkhtmltopdf-amd64 http://pnl-t55-9:5000/ /tmp/intrust_site_counts.pdf; uuencode /tmp/intrust_site_counts.pdf intrust_site_counts.pdf | mailx -s 'Intrust Site Counts' mjc@bwh.harvard.edu; rm /tmp/intrust_site_counts.pdf
+# minute (0-59),
+#    hour (0-23),
+#       day of the month (1-31),
+#          month of the year (1-12),
+#             day of the week (0-6, 0=Sunday),
+#       
+
+00 02 * * 6 /projects/schiz/log/weekly.sh
+00 03 * * * /projects/schiz/log/daily.sh
+00 13 * * 1 /projects/schiz/log/log_intrustpdf.sh; /projects/schiz/log/mailintrust.sh reckbo mjc
