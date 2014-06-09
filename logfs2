@@ -1,0 +1,11 @@
+#!/bin/bash
+
+mounts="/terastations/A /terastations/B /projects/schiz/ /projects/pnl"
+logfile=/projects/schiz/log/df_filesystems2.log
+
+(echo; date) >> $logfile
+
+for m in $mounts; do
+    echo -n $m
+    df --output=pcent $m | sed -n '2p'
+done >> $logfile
