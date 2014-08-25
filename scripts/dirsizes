@@ -1,0 +1,23 @@
+#!/bin/bash
+
+usage() {
+    cat <<EOF
+    Usage:
+
+        $(basename $0) <dir> [depth]
+
+EOF
+}
+
+if [[ $# < 1 || $1 == "-h" || $1 == "--help" ]]; then
+    usage
+fi
+
+dir=$1
+depth=$2
+if [ -z "$2" ]; then
+    depth=1
+fi
+
+echo "Last Modified, Size, Directory"
+du --time -b --max-depth $depth $dir | sort -n | awk '{ print $2 $3 ", " $1 ", "  $4 }'
