@@ -1,5 +1,0 @@
-#!/bin/bash
-
-#find $1 -name "*.*" -type f -size +200000k -exec ls -l {} \; | awk '{ print $9 ": " $5 }'
-echo "Last Modified, Size, Filename, Owner"
-find $1 -type f -size +200000k -exec stat -c "%.19y, %s, %n, %U" {} \;

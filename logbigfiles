@@ -1,0 +1,30 @@
+#!/bin/bash
+
+logdir="$(dirname $0)/logbigfiles.dir"
+mkdir -p $logdir
+
+logfilename() {
+    datestamp=$(date +"%Y%m%d")
+    prefix=$(echo $1 | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
+    logfile="${prefix}-bigfiles-${datestamp}.csv"
+    echo "$logdir/$logfile"
+}
+
+configfile=$(dirname $0)/config/BIGFILE_DIRS
+if [ ! -f $configfile ]; then
+    echo "Set $configfile"
+    exit 1
+fi
+
+echo "Making the following log files:"
+while read dir; do
+    echo "* $(logfilename $dir)"
+done <$configfile
+
+while read dir; do
+    cmd="$(dirname $0)/scripts/bigfiles $dir > $(logfilename $dir)"
+    echo
+    echo "$cmd"
+    eval "$cmd"
+done <$configfile 
+

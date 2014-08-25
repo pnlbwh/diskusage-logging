@@ -1,3 +1,9 @@
-#!/bin/bash
+#!/bin/sh -e
 
-(echo; date; df -HP | egrep 'lmi-terastation.*share$|schiz' | awk '{ print $5 " " $1 }') >> /projects/schiz/log/df_filesystems.log
+logdir="$(dirname $0)/logfs.dir/"
+mkdir -p $logdir
+
+datestamp=$(date +"%Y%m%d")
+logfile="$logdir/fs-$datestamp.csv"
+
+$(dirname $0)/scripts/mydf > $logfile

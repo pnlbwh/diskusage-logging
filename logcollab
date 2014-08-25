@@ -1,4 +1,0 @@
-#!/bin/bash
-
-dir=/net/lmi-terastation-a/mnt/array1/share/pnl/Collaborators
-(echo; date; du -b --max-depth 1 $dir | sort -n) >> /projects/schiz/log/du_collaborators.log

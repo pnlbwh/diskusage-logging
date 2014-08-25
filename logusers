@@ -1,4 +1,0 @@
-#!/bin/sh
-
-(echo; date; du -b --max-depth 1 /projects/schiz/ra /projects/schiz/guest/ /projects/schiz/pi/ | sort -n) \
-    >> /projects/schiz/log/du_users.log

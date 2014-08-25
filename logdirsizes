@@ -1,0 +1,40 @@
+#!/bin/sh -e
+
+logdir="$(dirname $0)/logdirsizes.dir"
+mkdir -p $logdir
+
+logfilename() {
+    datestamp=$(date +"%Y%m%d")
+    prefix=$(echo $1 | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
+    logfile="${prefix}-dirsizes-$2-${datestamp}.csv"
+    echo "$logdir/$logfile"
+}
+
+configfile="$(dirname $0)/config/DIRSIZE_DIRS"
+if [ ! -f $configfile ]; then
+    echo "Set $configfile"
+    exit 1
+fi
+
+echo "Making the following log files:"
+while read line; do
+    depth=$(echo $line | awk '{ print $2 }')
+    dir=$(echo $line | awk '{ print $1 }')
+    if [ -z "$depth" ]; then
+        depth=1
+    fi
+    echo "* $(logfilename $dir $depth)"
+done <$configfile
+echo
+
+while read line; do
+    depth=$(echo $line | awk '{ print $2 }')
+    dir=$(echo $line | awk '{ print $1 }')
+    if [ -z "$depth" ]; then
+        depth=1
+    fi
+    cmd="$(dirname $0)/scripts/dirsizes $dir $depth > \
+        $(logfilename $dir $depth)"
+    echo $cmd
+    eval "$cmd"
+done <$configfile

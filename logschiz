@@ -1,4 +1,0 @@
-#!/bin/sh
-
-(echo; date; du -b --max-depth 1 /projects/schiz/ | sort -n) >> /projects/schiz/log/du_schiz.log
-(echo; date; du -b --max-depth 3 /projects/schiz/ | sort -n) >> /projects/schiz/log/du_schiz_3.log

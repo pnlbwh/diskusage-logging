@@ -1,23 +1,34 @@
-#!/bin/bash
+#!/bin/bash -e
 
 usage() {
     cat <<EOF
     Usage:
 
-        $(basename $0) <dir> [depth]
+        $(basename $0) <dir> [depth] ["withheader"]
 
 EOF
 }
 
 if [[ $# < 1 || $1 == "-h" || $1 == "--help" ]]; then
     usage
+    exit 1
 fi
 
-dir=$1
+dir=$(readlink -f $1)
 depth=$2
 if [ -z "$2" ]; then
     depth=1
 fi
 
-echo "Last Modified, Size, Directory"
-du --time -b --max-depth $depth $dir | sort -n | awk '{ print $2 $3 ", " $1 ", "  $4 }'
+results=$(du --time -b --max-depth $depth $dir |  \
+    sort -n | \
+    awk '{ ( "stat -c %U "$4 | getline owner ); \
+    print strftime("%Y-%m-%d %H:%M:%S") ", " $1 ", " $4 ", " $2 " " $3 ", " owner }' | \
+    head -n -1 )
+
+if [ -n "$results" ]; then
+    echo "Datetime, Size, Directory, Last Modified,  Owner"
+    echo "$results"
+else
+    >&2 echo "No output found for $dir" 
+fi
