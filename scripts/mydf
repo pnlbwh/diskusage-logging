@@ -27,5 +27,5 @@ fi
 date=("$(date +"%Y-%m-%d %H:%M:%S")")
 echo "Datetime, Filesystem, Usage"
 while read m; do
-    printf "%s, %s, %s\n" "${date[@]}" $m `/projects/schiz/software/local/bin/df --output=pcent $m | sed -n '2p'`
+    printf "%s, %s, %s\n" "${date[@]}" $m $(/projects/schiz/software/local/bin/df --output=pcent $m | sed -n '2p' | sed 's/%//')
 done <$configfile
