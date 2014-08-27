@@ -10,21 +10,7 @@ logfilename() {
     echo "$logdir/$logfile"
 }
 
-configfile=$(dirname $0)/config/BIGFILE_DIRS
-if [ ! -f $configfile ]; then
-    echo "Set $configfile"
-    exit 1
-fi
-
-echo "Making the following log files:"
-while read dir; do
-    echo "* $(logfilename $dir)"
-done <$configfile
-
-while read dir; do
-    cmd="$(dirname $0)/scripts/bigfiles $dir > $(logfilename $dir)"
-    echo
-    echo "$cmd"
-    eval "$cmd"
-done <$configfile 
-
+cmd="$(dirname $0)/scripts/bigfiles $@ > $(logfilename $1)"
+echo "Running:"
+echo "$cmd" >&2
+eval "$cmd"

@@ -10,31 +10,9 @@ logfilename() {
     echo "$logdir/$logfile"
 }
 
-configfile="$(dirname $0)/config/DIRSIZE_DIRS"
-if [ ! -f $configfile ]; then
-    echo "Set $configfile"
-    exit 1
-fi
+depth=1
+[ -n "$2" ] && depth=$2
 
-echo "Making the following log files:"
-while read line; do
-    depth=$(echo $line | awk '{ print $2 }')
-    dir=$(echo $line | awk '{ print $1 }')
-    if [ -z "$depth" ]; then
-        depth=1
-    fi
-    echo "* $(logfilename $dir $depth)"
-done <$configfile
-echo
-
-while read line; do
-    depth=$(echo $line | awk '{ print $2 }')
-    dir=$(echo $line | awk '{ print $1 }')
-    if [ -z "$depth" ]; then
-        depth=1
-    fi
-    cmd="$(dirname $0)/scripts/dirsizes $dir $depth > \
-        $(logfilename $dir $depth)"
-    echo $cmd
-    eval "$cmd"
-done <$configfile
+cmd="$(dirname $0)/scripts/dirsizes "$@" > $(logfilename $1 $depth)"
+echo "$cmd" >&2
+eval "$cmd"
