@@ -1,6 +1,6 @@
 #!/bin/sh
 
-configfile=$(readlink -f $(dirname $0)/../config/FILESYSTEM_DIRS)
+CONFIGFILE=$(readlink -f $(dirname $0)/config/FILESYSTEM_DIRS)
 
 usage() {
     cat <<EOF
@@ -9,7 +9,7 @@ usage() {
         $(basename $0) 
 
     Prints percent usage for each filesystem listed in 
-    "$configfile".
+    "$CONFIGFILE".
 
 EOF
 }
@@ -19,8 +19,8 @@ if [[ $1 == "-h" || $1 == "--help" ]]; then
     exit 1
 fi
 
-if [ ! -f $configfile ]; then
-    echo "Set $configfile first"
+if [ ! -f "$CONFIGFILE" ]; then
+    echo "Set $CONFIGFILE first"
     exit 1
 fi
 
@@ -28,4 +28,4 @@ date=("$(date +"%Y-%m-%d %H:%M:%S")")
 echo "Datetime, Filesystem, Usage"
 while read m; do
     printf "%s, %s, %s\n" "${date[@]}" $m $(/projects/schiz/software/local/bin/df --output=pcent $m | sed -n '2p' | sed 's/%//')
-done <$configfile
+done <$CONFIGFILE

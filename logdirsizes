@@ -10,6 +10,8 @@ logfilename() {
     echo "$logdir/$logfile"
 }
 
+[ $# -lt 1 ] && { ./scripts/dirsizes -h; exit 1; }
+
 depth=1
 [ -n "$2" ] && depth=$2
 

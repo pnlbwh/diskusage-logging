@@ -1,0 +1,11 @@
+#!/bin/bash
+
+dir=/projects/schiz/log/plots
+from=reckbo@bwh.harvard.edu
+for user in $@; do
+    echo "" | mailx -r $from -s "disk usage" \
+        -a $dir/fs.png \
+        -a $dir/users.png \
+        -a $dir/schiz.png \
+        -a $dir/collab.png -- $user@bwh.harvard.edu
+done
