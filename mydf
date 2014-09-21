@@ -1,6 +1,8 @@
 #!/bin/sh
 
-CONFIGFILE=$(readlink -f $(dirname $0)/config/FILESYSTEM_DIRS)
+SCRIPT=$(readlink -m $(type -p $0))
+SCRIPT_DIR=$(dirname ${SCRIPT})      
+CONFIGFILE=$(readlink -f $SCRIPT_DIR/config/FILESYSTEM_DIRS)
 
 usage() {
     cat <<EOF
