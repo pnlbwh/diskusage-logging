@@ -1,20 +1,40 @@
-#!/bin/sh -e
+#!/bin/bash -eu
 
-logdir="$(dirname $0)/logdirsizes.dir"
-mkdir -p $logdir
+usage() {
+    cat <<EOF
+    Usage:
+
+        $(basename $0) <dir> [depth]
+
+EOF
+}
 
 logfilename() {
-    datestamp=$(date +"%Y%m%d")
-    prefix=$(echo $1 | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
-    logfile="${prefix}-dirsizes-$2-${datestamp}.csv"
+    local logdir=logdirsizes.dir
+    local datestamp=$(date +"%Y%m%d")
+    local prefix=$(echo $1 | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
+    local logfile="${prefix}-dirsizes-$2-${datestamp}.csv"
+    mkdir -p $logdir
     echo "$logdir/$logfile"
 }
 
-[ $# -lt 1 ] && { ./scripts/dirsizes -h; exit 1; }
+[[ $1 == "-h" || $1 == "--help" || $# -lt 1 ]] && { usage; exit 1; }
 
+dir=$(readlink -f $1)
 depth=1
 [ -n "$2" ] && depth=$2
 
-cmd="$(dirname $0)/scripts/dirsizes "$@" > $(logfilename $1 $depth)"
-echo "$cmd" >&2
-eval "$cmd"
+results=$(du --time -b --max-depth $depth $dir |  \
+    sort -n | \
+    awk '{ ( "stat -c %U "$4 | getline owner ); \
+    print strftime("%Y-%m-%d %H:%M:%S") ", " $1 ", " $4 ", " $2 " " $3 ", " owner }' | \
+    head -n -1 )
+
+log=$(logfilename $1 $depth)
+if [ -n "$results" ]; then
+    echo "Datetime, Size, Directory, Last Modified,  Owner" > $log
+    echo "$results" >> $log
+else
+    >&2 echo "No output found for $dir" 
+    touch $log
+fi
