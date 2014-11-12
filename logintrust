@@ -1,5 +1,0 @@
-#!/bin/bash
-
-/projects/schiz/software/bin/wkhtmltopdf-amd64 \
-    http://pnl-t55-14:5000/ \
-    /projects/schiz/log/logintrust.dir/intrust_site_counts_`date +"%Y%m%d"`.pdf

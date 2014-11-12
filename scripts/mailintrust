@@ -1,5 +1,0 @@
-#!/bin/bash
-
-for user in $@; do
-    echo "" | mailx -s 'Intrust Site Counts' -a $(dirname $0)/../logintrust.dir/intrust_site_counts_`date +"%Y%m%d"`.pdf $user@bwh.harvard.edu;
-done
