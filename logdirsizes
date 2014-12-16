@@ -1,5 +1,8 @@
 #!/bin/bash -eu
 
+SCRIPT=$(readlink -m $(type -p $0))
+SCRIPTDIR=$(dirname $SCRIPT)
+
 usage() {
     cat <<EOF
     Usage:
@@ -10,7 +13,7 @@ EOF
 }
 
 logfilename() {
-    local logdir=logdirsizes.dir
+    local logdir=$SCRIPTDIR/logdirsizes.dir
     local datestamp=$(date +"%Y%m%d")
     local prefix=$(echo $1 | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
     local logfile="${prefix}-dirsizes-$2-${datestamp}.csv"
@@ -24,6 +27,10 @@ dir=$(readlink -f $1)
 depth=1
 [ -n "$2" ] && depth=$2
 
+#results=$(du --time -b --max-depth $depth $dir |  \
+    #sort -n | \
+    #awk '{ print strftime("%Y-%m-%d %H:%M:%S") ", " $1 ", " $1/1024/1024/1024 ", " $4 ", " $2 " " $3 }' | \
+    #head -n -1 )
 results=$(du --time -b --max-depth $depth $dir |  \
     sort -n | \
     awk '{ print strftime("%Y-%m-%d %H:%M:%S") ", " $1 ", " $1/1024/1024/1024 ", " $4 ", " $2 " " $3 }' | \
@@ -32,7 +39,7 @@ results=$(du --time -b --max-depth $depth $dir |  \
 log=$(logfilename $1 $depth)
 if [ -n "$results" ]; then
     #echo "Datetime, Size, Directory, Last Modified,  Owner" > $log
-    echo "Datetime, Size, SizeG, Directory, Last Modified,  Owner" > $log
+    echo "Datetime, Size, SizeG, Directory, Last Modified" > $log
     echo "$results" >> $log
 else
     >&2 echo "No output found for $dir" 
