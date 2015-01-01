@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-PROGDIR=$(dirname $0)
-LOGDIR="$PROGDIR/logfs.dir/"
-mkdir -p $LOGDIR
-logfile="fs-$(date +"%Y%m%d").csv"
-
-$PROGDIR/mydf > $LOGDIR/$logfile

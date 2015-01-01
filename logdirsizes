@@ -21,26 +21,38 @@ logfilename() {
     echo "$logdir/$logfile"
 }
 
-[[ $1 == "-h" || $1 == "--help" || $# -lt 1 ]] && { usage; exit 1; }
+[[ $# -lt 1 || $1 == "-h" || $1 == "--help" ]] && { usage; exit 1; }
 
-dir=$(readlink -f $1)
-depth=1
-[ -n "$2" ] && depth=$2
+depth=3
+[ -n "${2-}" ] && depth=$2
 
-#results=$(du --time -b --max-depth $depth $dir |  \
-    #sort -n | \
-    #awk '{ print strftime("%Y-%m-%d %H:%M:%S") ", " $1 ", " $1/1024/1024/1024 ", " $4 ", " $2 " " $3 }' | \
-    #head -n -1 )
-results=$(du --time -b --max-depth $depth $dir |  \
-    sort -n | \
-    awk '{ print strftime("%Y-%m-%d %H:%M:%S") ", " $1 ", " $1/1024/1024/1024 ", " $4 ", " $2 " " $3 }' | \
-    head -n -1 )
+remote=false
+IFS=":" read server remotepath <<< "$1"
+if [ -n "${remotepath-}" ]; then
+    remote=true
+    dir=$(ssh $server "readlink -f $remotepath")
+else
+    dir=$(readlink -f "$1")
+fi
 
-log=$(logfilename $1 $depth)
-if [ -n "$results" ]; then
-    #echo "Datetime, Size, Directory, Last Modified,  Owner" > $log
+read -d '' cmd << EOF || true
+du --time -b --max-depth $depth $dir |  
+sort -n | 
+awk '{ print strftime("%Y-%m-%d %H:%M:%S") ", " \$1 ", " \$1/1024/1024/1024 ", " \$4 ", " \$2 " " \$3 }' | 
+head -n -1
+EOF
+
+if $remote; then
+    results=$(ssh $server "$cmd")
+else
+    results=$(eval "$cmd")
+fi
+
+log=$(logfilename $dir $depth)
+if [ -n "${results-}" ]; then
     echo "Datetime, Size, SizeG, Directory, Last Modified" > $log
     echo "$results" >> $log
+    echo "Made $log"
 else
     >&2 echo "No output found for $dir" 
     touch $log

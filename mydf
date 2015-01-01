@@ -6,20 +6,26 @@ CONFIGFILE=$(readlink -f $SCRIPT_DIR/FILESYSTEM_DIRS)
 
 usage() {
     cat <<EOF
-    Usage:
+Usage:
 
-        $(basename $0) 
+    $(basename $0) 
 
-    Prints percent usage for each filesystem listed in 
-    "$CONFIGFILE".
+Prints percent usage for each filesystem listed in 
+"$CONFIGFILE".
 
 EOF
 }
 
-if [[ $1 == "-h" || $1 == "--help" ]]; then
-    usage
-    exit 1
-fi
+dfcmd() {
+    local _dir=$1
+    local _cmd
+    read -d '' _cmd << EOF || true
+df -P $_dir | sed -n '2p' | awk '{ print \$5 }' | sed 's/%//g'
+EOF
+    echo $_cmd
+}
+
+[[ $1 == "-h" || $1 == "--help" ]] && { usage; exit 1; }
 
 if [ ! -f "$CONFIGFILE" ]; then
     echo "Set $CONFIGFILE first"
@@ -28,6 +34,13 @@ fi
 
 date=("$(date +"%Y-%m-%d %H:%M:%S")")
 echo "Datetime, Filesystem, Usage"
-while read m; do
-    printf "%s, %s, %s\n" "${date[@]}" $m $(/projects/schiz/software/local/bin/df --output=pcent $m | sed -n '2p' | sed 's/%//')
+while read line; do
+    IFS=":" read server remotepath <<< "$line"
+    if [ -n "${remotepath-}" ]; then  
+        cmd=$(dfcmd $remotepath)
+        printf "%s, %s, %s\n" "${date[@]}" $remotepath $(ssh $server "$cmd")
+    else
+        cmd=$(dfcmd $line)
+        printf "%s, %s, %s\n" "${date[@]}" $line $(eval "$cmd")
+    fi
 done <$CONFIGFILE

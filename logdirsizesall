@@ -1,0 +1,9 @@
+#!/bin/bash -eu
+
+SCRIPT=$(readlink -m $(type -p $0))
+SCRIPT_DIR=$(dirname ${SCRIPT})      
+CONFIGFILE=$(readlink -f $SCRIPT_DIR/FILESYSTEM_DIRS)
+
+for fs in `cat $CONFIGFILE`; do
+    $SCRIPT_DIR/logdirsizes $fs
+done

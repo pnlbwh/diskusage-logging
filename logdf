@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+PROGDIR=$(dirname $0)
+LOGDIR="$PROGDIR/logdf.dir"
+mkdir -p $LOGDIR
+logfile="df-$(date +"%Y%m%d").csv"
+
+$PROGDIR/mydf > $LOGDIR/$logfile
+echo "Made $LOGDIR/$logfile"
