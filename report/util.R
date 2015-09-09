@@ -10,13 +10,13 @@ df_from_files <- function(globpattern) {
     arrange(Datetime)
 }
 
-changes <- function(df) {
+changes <- function(df, k=1) {
     df %>%
         filter(!grepl("Trash", Directory)) %>%
         group_by(Directory) %>%
         mutate(Datetime=as.character(Datetime)) %>%
-        mutate(change=(Size - lag(Size))/1024/1024/1024,
-                Datetime.before=lag(Datetime)) %>%
+        mutate(change=(Size - lag(Size, k))/1024/1024/1024,
+                Datetime.before=lag(Datetime, k)) %>%
         ungroup() %>%
         filter(Datetime==max(df$Datetime)) %>%
         arrange(desc(change))
@@ -57,6 +57,7 @@ dir2glob <- function(dir) {
         dir <- unlist(strsplit(dir, ':'))[2]
     }
     prefix <- gsub('/', '_', trim(dir))
+    prefix <- gsub('_$', '', prefix)
     prefix <- substring(prefix, 2) # remove first '_'
     paste0('../logdirsizes.dir/', prefix, "*.csv")
 }

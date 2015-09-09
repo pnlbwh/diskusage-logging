@@ -1,7 +1,15 @@
-#!/bin/bash
+#!/bin/bash -eu
 
-logdir="$(dirname $0)/logbigfiles.dir"
-mkdir -p $logdir
+usage() {
+cat <<EOF
+Usage:
+
+    $(basename $0) <dir>
+
+Finds and logs details for all files > 300M in <dir>
+
+EOF
+}
 
 logfilename() {
     datestamp=$(date +"%Y%m%d")
@@ -10,7 +18,21 @@ logfilename() {
     echo "$logdir/$logfile"
 }
 
-cmd="$(dirname $0)/scripts/bigfiles $@ > $(logfilename $1)"
-echo "Running:"
-echo "$cmd" >&2
-eval "$cmd"
+[[ $# -ne 1 || $1 == -h* ]] && { usage; exit 1; }
+logdir="$(dirname $0)/logbigfiles.dir"
+mkdir -p $logdir
+
+bigfiles() {
+    result=$(find $1 -type f -size +300000k -exec stat -c "%s, %n, %.19y, %.19x, %U" {} \; \
+    | xargs -I{} echo $(date +"%Y-%m-%d %H:%M:%S"), {} \
+    | sort -t, -n -k2)
+    if [ -n "$result" ]; then
+        echo "Datetime, Size, Filename, Last Modified, Last Accessed, Owner"
+        echo "$result"
+    else
+        >&2 echo "No results found for $1"
+    fi
+}
+
+echo "Make '$(logfilename $1)'"
+bigfiles $@ > "$(logfilename $1)"
