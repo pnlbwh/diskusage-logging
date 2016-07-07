@@ -36,10 +36,10 @@ else
 fi
 
 read -d '' cmd << EOF || true
-du --time -b --max-depth $depth $dir |  
-sort -n | 
-awk '{ print strftime("%Y-%m-%d %H:%M:%S") ", " \$1 ", " \$1/1024/1024/1024 ", " \$4 ", " \$2 " " \$3 }' | 
-head -n -1
+du --time -b --max-depth $depth $dir | 
+    awk  '{ print strftime("%Y-%m-%d %H:%M:%S"),\$1,\$1/1024/1024/1024,\$4,\$2,\$3 }' OFS='|' | 
+    head -n -1 |
+    python dsv2csv.py
 EOF
 
 if $remote; then
@@ -51,7 +51,7 @@ fi
 log=$(logfilename $dir $depth)
 if [ -n "${results-}" ]; then
     echo "Datetime, Size, SizeG, Directory, Last Modified" > $log
-    echo "$results" >> $log
+    echo -e "$results" >> $log
     echo "Made $log"
 else
     >&2 echo "No output found for $dir" 
