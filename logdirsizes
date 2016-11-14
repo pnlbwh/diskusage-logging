@@ -13,10 +13,12 @@ EOF
 }
 
 logfilename() {
-    local logdir=$SCRIPTDIR/logdirsizes.dir
+    local dir=$1
+    local depth=$2
+    local logdir=$SCRIPTDIR/_data/logdirsizes
     local datestamp=$(date +"%Y%m%d")
-    local prefix=$(echo $1 | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
-    local logfile="${prefix}-dirsizes-$2-${datestamp}.csv"
+    local prefix=$(echo $dir | sed 's,\/,_,g' | sed 's,_$,,' | sed 's,^_,,')
+    local logfile="${prefix}-dirsizes-$depth-${datestamp}.csv"
     mkdir -p $logdir
     echo "$logdir/$logfile"
 }
@@ -36,10 +38,9 @@ else
 fi
 
 read -d '' cmd << EOF || true
-du --time -b --max-depth $depth $dir | 
-    awk  '{ print strftime("%Y-%m-%d %H:%M:%S"),\$1,\$1/1024/1024/1024,\$4,\$2,\$3 }' OFS='|' | 
-    head -n -1 |
-    python dsv2csv.py
+du --time -b --max-depth $depth $dir |
+    awk  '{ print strftime("%Y-%m-%d %H:%M:%S"),\$1,\$1/1024/1024/1024,\$4,\$2" "\$3 }' OFS='|' |
+    head -n -1
 EOF
 
 if $remote; then
@@ -51,9 +52,9 @@ fi
 log=$(logfilename $dir $depth)
 if [ -n "${results-}" ]; then
     echo "Datetime, Size, SizeG, Directory, Last Modified" > $log
-    echo -e "$results" >> $log
+    echo -e "$results" | python $SCRIPTDIR/dsv2csv.py >> $log
     echo "Made $log"
 else
-    >&2 echo "No output found for $dir" 
+    >&2 echo "No output found for $dir"
     touch $log
 fi

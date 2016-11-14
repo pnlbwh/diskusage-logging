@@ -15,7 +15,7 @@ changes <- function(df, k=1) {
         filter(!grepl("Trash", Directory)) %>%
         group_by(Directory) %>%
         mutate(Datetime=as.character(Datetime)) %>%
-        mutate(change=(Size - lag(Size, k))/1024/1024/1024,
+        mutate(change=(as.numeric(Size) - lag(as.numeric(Size), k))/1024/1024/1024,
                 Datetime.before=lag(Datetime, k)) %>%
         ungroup() %>%
         filter(Datetime==max(df$Datetime)) %>%
@@ -29,18 +29,18 @@ selectpretty <- function(tbl) {
             "change (G)"=change)
 }
 
-worst <- function(tbl) {
+worst <- function(tbl, num=10) {
     d <- tbl %>%
         arrange(desc(change)) %>%
         filter(change > 0.1)
-        head(d, 10)
+        head(d, num)
 }
 
-best <- function(tbl) {
+best <- function(tbl, num=10) {
     d <- tbl %>%
         arrange(change) %>%
         filter(change < -0.1)
-        head(d, 10)
+        head(d, num)
 }
 
 printtable <- function(tbl) {
@@ -59,12 +59,26 @@ dir2glob <- function(dir) {
     prefix <- gsub('/', '_', trim(dir))
     prefix <- gsub('_$', '', prefix)
     prefix <- substring(prefix, 2) # remove first '_'
-    paste0('../logdirsizes.dir/', prefix, "*.csv")
+    paste0('../_data/logdirsizes/', prefix, "*.csv")
 }
 
-print_week_changes <- function(dir) {
+print_period_changes <- function(dir, numentries=10, numdates=1) {
     d <- df_from_files(dir2glob(dir))
-    d.changes <- changes(d)
-    printtable(worst(d.changes))
-    printtable(best(d.changes))
+    d.changes <- changes(d,numdates)
+    printtable(worst(d.changes, numentries))
+    printtable(best(d.changes, numentries))
 }
+
+print_largest <-  function(dir) {
+    d <- df_from_files(dir2glob(dir))
+    d2 <- d %>% mutate(Datetime=as.character(Datetime)) %>%
+          group_by(Datetime) %>%
+          top_n(n=6,wt=Size) %>%
+      filter(Datetime==max(d$Datetime)) %>%
+      select(Datetime, Directory, Last.Modified, SizeG) %>%
+      arrange(desc(SizeG))
+    x <- xtable(d2)
+    if(nrow(x) > 1) {
+        print(x, type="html", include.rownames=FALSE)
+    }
+ }
