@@ -2,7 +2,7 @@
 
 SCRIPT=$(readlink -m $(type -p $0))
 SCRIPT_DIR=$(dirname ${SCRIPT})      
-CONFIGFILE=$(readlink -f $SCRIPT_DIR/DIRS)
+CONFIGFILE=$(readlink -f $SCRIPT_DIR/config/dirs.txt)
 
 usage() {
     cat <<EOF
