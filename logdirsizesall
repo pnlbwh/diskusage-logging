@@ -5,4 +5,4 @@ SCRIPTDIR=$(dirname ${SCRIPT})
 
 while read dir; do
     $SCRIPTDIR/logdirsizes $dir
-done < $SCRIPTDIR/config/DIRS
+done < $SCRIPTDIR/config/dirs.txt
