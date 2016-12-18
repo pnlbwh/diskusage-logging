@@ -20,7 +20,7 @@ dfcmd() {
     local _dir=$1
     local _cmd
     read -d '' _cmd << EOF || true
-df -P $_dir | sed -n '2p' | awk '{ print \$5 }' | sed 's/%//g'
+df -HP $_dir | sed -n '2p' | awk 'BEGIN{OFS=",";} { print \$5,\$3 }' | sed 's/%//g' | sed 's/T//g'
 EOF
     echo $_cmd
 }
@@ -33,14 +33,14 @@ if [ ! -f "$CONFIGFILE" ]; then
 fi
 
 date=("$(date +"%Y-%m-%d %H:%M:%S")")
-echo "Datetime, Filesystem, Usage"
+echo "Datetime,Filesystem,Usage,UsageT"
 while read line; do
     IFS=":" read server remotepath <<< "$line"
     if [ -n "${remotepath-}" ]; then  
         cmd=$(dfcmd $remotepath)
-        printf "%s, %s, %s\n" "${date[@]}" $remotepath $(ssh $server "$cmd")
+        printf "%s,%s,%s\n" "${date[@]}" $remotepath $(ssh $server "$cmd")
     else
         cmd=$(dfcmd $line)
-        printf "%s, %s, %s\n" "${date[@]}" $line $(eval "$cmd")
+        printf "%s,%s,%s\n" "${date[@]}" $line $(eval "$cmd")
     fi
 done <$CONFIGFILE
