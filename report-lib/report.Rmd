@@ -11,14 +11,17 @@ min_date_d <- group_by(d, Filesystem) %>% filter(Datetime==min(Datetime)) %>% un
 
 ggplot(d, aes(Datetime, Usage)) +
     geom_line(aes(color=Filesystem), na.rm=T) +
-    scale_y_continuous(breaks=seq(0,100,by=5), labels=function(x){sprintf("%s%%",x)}) +
-    xlab("") +
-    ylab("") +
-    ggtitle("Filesystem Usage") +
-    theme(text = element_text(size=20)) +
-    geom_text(data=min_date_d, aes(label=Filesystem, color=Filesystem),  hjust = 0.0, vjust = -0.3) +
-    geom_text(data=last_date_d, aes(label=Usage, color=Filesystem),  hjust = 0.9, vjust = -0.3, na.rm=T) +
-    theme(legend.position="none")
+    ggtitle("Filesystem Usage (%)") +
+    geom_text(data=last_date_d, aes(label=Usage, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
+    theme(text = element_text(size=20))
+
+ggplot(d, aes(x=Datetime, y=UsageT)) +
+    geom_line(aes(color=Filesystem), na.rm=T) +
+    ggtitle("Filesystem Usage (Terabytes)") +
+    geom_text(data=last_date_d, aes(label=UsageT, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
+    ylim(0,40) +
+    theme(text = element_text(size=20))
+
 ```
 
 ```{r, results='asis', echo=F}
