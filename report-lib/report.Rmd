@@ -26,9 +26,9 @@ ggplot(d, aes(x=Datetime, y=UsageT)) +
 
 ```{r, results='asis', echo=F}
 source('util.R')
-for (numPeriods in c(4,8,12)) {
+for (numPeriods in c(1,4,8,12)) {
   cat("# Directory Size Changes (", numPeriods, " Periods)\n", sep="")
-  for (i in readLines("../config/dirs.txt", encoding="UTF-8")) {
+  for (i in readLines("../_config/dirs.txt", encoding="UTF-8")) {
       cat("## ", i, "\n")
       print_period_changes(i,10,numPeriods)
   }
@@ -39,7 +39,7 @@ for (numPeriods in c(4,8,12)) {
 # Largest Directories
 ```{r, results='asis', echo=F, warning=F}
 source('util.R')
-for (i in readLines("../config/dirs.txt", encoding="UTF-8")) {
+for (i in readLines("../_config/dirs.txt", encoding="UTF-8")) {
     cat("## ", i, "\n")
     print_largest(i)
 }
