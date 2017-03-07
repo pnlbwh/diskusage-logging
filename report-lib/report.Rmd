@@ -1,46 +1,77 @@
 # Disk Space
 
-```{r, fig.height=8,fig.width=10,echo=F}
+```{r, fig.height=8,fig.width=10,echo=F,warning=F}
+library(data.table, quietly=TRUE)
 library(ggplot2, quietly=TRUE)
-source('util.R')
-d <- df_from_files('../_data/logdf/*csv')
-#last_date_d <- filter(d, Datetime==max(Datetime))
-last_date_d <- group_by(d, Filesystem) %>% filter(Datetime==max(Datetime)) %>% ungroup()
-min_date_d <- group_by(d, Filesystem) %>% filter(Datetime==min(Datetime)) %>% ungroup()
-#min_date_d <- filter(d, Datetime==min(Datetime))
+suppressWarnings(library(magrittr, quietly=TRUE))
+library(lubridate, quietly=TRUE)
 
-ggplot(d, aes(Datetime, Usage)) +
+df <- '../_data/logdf/*csv' %>% Sys.glob %>% lapply(fread) %>% rbindlist
+df[,date:=parse_date_time(Datetime,"ymdHMS") %>% date]
+df.mostRecent <- df[, .SD[which.max(date)],by=Filesystem]
+
+ggplot(df, aes(date, Usage)) +
     geom_line(aes(color=Filesystem), na.rm=T) +
     ggtitle("Filesystem Usage (%)") +
-    geom_text(data=last_date_d, aes(label=Usage, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
+    geom_text(data=df.mostRecent, aes(label=Usage, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
     theme(text = element_text(size=20))
 
-ggplot(d, aes(x=Datetime, y=UsageT)) +
+ggplot(df, aes(x=date, y=UsageT)) +
     geom_line(aes(color=Filesystem), na.rm=T) +
     ggtitle("Filesystem Usage (Terabytes)") +
-    geom_text(data=last_date_d, aes(label=UsageT, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
+    geom_text(data=df.mostRecent, aes(label=UsageT, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
     ylim(0,40) +
     theme(text = element_text(size=20))
 
 ```
 
-```{r, results='asis', echo=F}
-source('util.R')
-for (numPeriods in c(1,4,8,12)) {
-  cat("# Directory Size Changes (", numPeriods, " Periods)\n", sep="")
-  for (i in readLines("../_config/dirs.txt", encoding="UTF-8")) {
-      cat("## ", i, "\n")
-      print_period_changes(i,10,numPeriods)
-  }
-}
-```
-
+<!-- ```{r, results='asis', echo=F} -->
+<!-- source('util.R') -->
+<!-- for (numPeriods in c(1,4,8,12)) { -->
+<!--   cat("# Directory Size Changes (", numPeriods, " Periods)\n", sep="") -->
+<!--   for (i in readLines("../_config/dirs.txt", encoding="UTF-8")) { -->
+<!--       cat("## ", i, "\n") -->
+<!--       print_period_changes(i,10,numPeriods) -->
+<!--   } -->
+<!-- } -->
+<!-- ``` -->
 
 # Largest Directories
 ```{r, results='asis', echo=F, warning=F}
-source('util.R')
-for (i in readLines("../_config/dirs.txt", encoding="UTF-8")) {
-    cat("## ", i, "\n")
-    print_largest(i)
+
+library(lubridate, quietly=TRUE)
+suppressWarnings(library(magrittr, quietly=TRUE))
+library(xtable, quietly=TRUE)
+
+printTable <- function(d) {
+  tbl <- xtable(d)
+  if (nrow(tbl) > 1) {
+    print(tbl, type="html", include.rownames=FALSE)
+  }
 }
+
+dirsizes <- '../_data/logdirsizes/*csv' %>% Sys.glob %>% lapply(fread) %>% rbindlist
+dirsizes[,date:=parse_date_time(Datetime,"ymdHMS") %>% date]
+setorder(dirsizes, -date, -SizeG)
+cols <- c("Datetime", "Directory", "SizeG")
+
+for (rootDir in readLines("../_config/dirs.txt", encoding="UTF-8")) {
+    if (grepl(':', rootDir)) {
+        rootDir <- unlist(strsplit(rootDir, ':'))[2]
+    }
+    cat("## ", rootDir, "\n")
+    dirsizes[Directory %like% rootDir, ..cols][1:6] %>% printTable
+}
+```
+
+```{r, results='asis', echo=F, warning=F}
+library(magrittr, quietly=TRUE)
+cat("## Largest Home Directories\n")
+dirsizes[Directory %like% "home/\\w+$", ..cols][1:10] %>% printTable
+
+cat("## Largest Project Directories\n")
+dirsizes[Directory %like% "projects/\\w+$", ..cols][1:10] %>% printTable
+
+cat("## Largest Collaborators Directories\n")
+dirsizes[Directory %like% "Collaborators/\\w+$", ..cols][1:10] %>% printTable
 ```
