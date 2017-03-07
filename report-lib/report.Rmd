@@ -1,10 +1,5 @@
-# Disk Space
-
 ```{r, fig.height=8,fig.width=10,echo=F,warning=F}
-library(data.table, quietly=TRUE)
-library(ggplot2, quietly=TRUE)
-suppressWarnings(library(magrittr, quietly=TRUE))
-library(lubridate, quietly=TRUE)
+suppressWarnings(source('util.R'))
 
 df <- '../_data/logdf/*csv' %>% Sys.glob %>% lapply(fread) %>% rbindlist
 df[,date:=parse_date_time(Datetime,"ymdHMS") %>% date]
@@ -25,47 +20,51 @@ ggplot(df, aes(x=date, y=UsageT)) +
 
 ```
 
-<!-- ```{r, results='asis', echo=F} -->
-<!-- source('util.R') -->
-<!-- for (numPeriods in c(1,4,8,12)) { -->
-<!--   cat("# Directory Size Changes (", numPeriods, " Periods)\n", sep="") -->
-<!--   for (i in readLines("../_config/dirs.txt", encoding="UTF-8")) { -->
-<!--       cat("## ", i, "\n") -->
-<!--       print_period_changes(i,10,numPeriods) -->
-<!--   } -->
-<!-- } -->
-<!-- ``` -->
-
-# Largest Directories
-```{r, results='asis', echo=F, warning=F}
-
-library(lubridate, quietly=TRUE)
-suppressWarnings(library(magrittr, quietly=TRUE))
-library(xtable, quietly=TRUE)
-
-printTable <- function(d) {
-  tbl <- xtable(d)
-  if (nrow(tbl) > 1) {
-    print(tbl, type="html", include.rownames=FALSE)
-  }
-}
+```{r, results='asis', echo=F}
+source('util.R')
 
 dirsizes <- '../_data/logdirsizes/*csv' %>% Sys.glob %>% lapply(fread) %>% rbindlist
 dirsizes[,date:=parse_date_time(Datetime,"ymdHMS") %>% date]
+dirsizes[,Date:= format(date,format="%y-%m-%d")]
+setorder(dirsizes, -date)
+cols <- c("Date", "Directory", "SizeG", "deltaG")
+
+
+for (numPeriods in c(1,4,8,12)) {
+  ## cat("# Directory Size Changes (", numPeriods, " Periods)\n", sep="")
+  for (rootDir in readLines("../_config/dirs.txt", encoding="UTF-8")) {
+    rootDir <- stripHost(rootDir)
+    if (numPeriods == 1) {
+      cat("## ", rootDir, " biggest changes in previous week\n")
+    }
+    else {
+      cat("## ", rootDir, " biggest changes in previous ", numPeriods, " weeks\n")
+    }
+    dirsizes[!Directory %like% "Trash" & Directory %like% rootDir
+           , deltaG:=SizeG - shift(SizeG,numPeriods,type="lead")
+           , by=Directory]
+    dirsizes[order(-date,-deltaG), ..cols] %>% head(5) %>% printTable
+    dirsizes[order(-date,deltaG), ..cols] %>% head(5) %>% printTable
+  }
+}
+```
+
+```{r, results='asis', echo=F, warning=F}
+source('util.R')
+
 setorder(dirsizes, -date, -SizeG)
-cols <- c("Datetime", "Directory", "SizeG")
+cols <- c("Date", "Directory", "SizeG")
 
 for (rootDir in readLines("../_config/dirs.txt", encoding="UTF-8")) {
-    if (grepl(':', rootDir)) {
-        rootDir <- unlist(strsplit(rootDir, ':'))[2]
-    }
-    cat("## ", rootDir, "\n")
+    rootDir <- stripHost(rootDir)
+    cat("## ", rootDir, " largest directories \n")
     dirsizes[Directory %like% rootDir, ..cols][1:6] %>% printTable
 }
 ```
 
 ```{r, results='asis', echo=F, warning=F}
 library(magrittr, quietly=TRUE)
+
 cat("## Largest Home Directories\n")
 dirsizes[Directory %like% "home/\\w+$", ..cols][1:10] %>% printTable
 
