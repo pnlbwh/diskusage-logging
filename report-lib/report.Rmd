@@ -1,5 +1,5 @@
 ```{r, fig.height=8,fig.width=10,echo=F,warning=F}
-suppressWarnings(source('util.R'))
+source('util.R')
 
 df <- '../_data/logdf/*csv' %>% Sys.glob %>% lapply(fread) %>% rbindlist
 df[,date:=parse_date_time(Datetime,"ymdHMS") %>% date]
