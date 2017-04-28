@@ -29,7 +29,6 @@ dirsizes[,Date:= format(date,format="%y-%m-%d")]
 setorder(dirsizes, -date)
 cols <- c("Date", "Directory", "SizeG", "deltaG")
 
-
 for (numPeriods in c(1,4,8,12)) {
   ## cat("# Directory Size Changes (", numPeriods, " Periods)\n", sep="")
   for (rootDir in readLines("../_config/dirs.txt", encoding="UTF-8")) {
@@ -40,11 +39,9 @@ for (numPeriods in c(1,4,8,12)) {
     else {
       cat("## ", rootDir, " biggest changes in previous ", numPeriods, " weeks\n")
     }
-    dirsizes[!Directory %like% "Trash" & Directory %like% rootDir
-           , deltaG:=SizeG - shift(SizeG,numPeriods,type="lead")
-           , by=Directory]
-    dirsizes[order(-date,-deltaG), ..cols] %>% head(5) %>% printTable
-    dirsizes[order(-date,deltaG), ..cols] %>% head(5) %>% printTable
+    dirsizes[,deltaG:=SizeG - shift(SizeG,numPeriods,type="lead"), by=Directory]
+    dirsizes[order(-date,-deltaG),..cols][!Directory %like% "Trash" & Directory %like% rootDir] %>% head(5) %>% printTable
+    dirsizes[order(-date,deltaG),..cols][!Directory %like% "Trash" & Directory %like% rootDir] %>% head(5) %>% printTable
   }
 }
 ```

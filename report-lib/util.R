@@ -1,4 +1,4 @@
-pkgs <-c('ggplot2', 'data.table', 'xtable', 'magrittr', 'lubridate', 'xtable')
+pkgs <-c('ggplot2', 'data.table', 'xtable', 'magrittr', 'lubridate')
 for(p in pkgs) suppressPackageStartupMessages( stopifnot(
                                                library(p, quietly=TRUE,
                                                         logical.return=TRUE,
