@@ -32,3 +32,11 @@ of last week's disk space changes.  Generate it by running
 which saves the report as `_data/report.html`. `mailreport.sh
 <partners_username1> <partners_username2> ...` emails a copy of the report to a
 list of PNL users.
+
+# Common Issues
+
+One issue that sometimes arises is when one of the directories is inaccessible via the
+network (for PNL, this happens when the cluster is unavailable). This can add some
+nonsensical data to the csvs, particularly `logdf`'s output.  If it looks like the
+report is missing data or incorrect in some way, check the latest csvs and make sure
+they are in proper format.
