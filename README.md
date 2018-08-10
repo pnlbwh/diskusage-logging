@@ -1,5 +1,15 @@
 Who can we blame for using all our disk space?  Find out here.
 
+# Install
+
+Note: the current version of lubridate, in CRAN, requires a newer compiler than is available on CentOS 6. Install and activate
+devtoolset-3-toolchain *before installing*.
+
+Install prerequisites by running the following command in R:
+
+  > install.packages('ggplot2', 'data.table', 'xtable', 'magrittr', 'lubridate')
+
+
 # Config
 
 Put each file system's target directory (the one you're interested in) in a
