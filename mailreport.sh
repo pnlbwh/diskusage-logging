@@ -1,12 +1,21 @@
 #!/bin/bash
 SCRIPTDIR=$( cd $(dirname $0) ; pwd -P )
 
+# copy the report to a temp directory to avoid permission denied errors
+tmpdir=$(mktemp -d)
+cp $SCRIPTDIR/_data/report.html $tmpdir/report.html
+
 # E.g.
 #  mailreport.sh reckbo sylvain
 
-from=reckbo@bwh.harvard.edu
+DATE=$(date +"%Y%m%d")
+
+from=inorton@bwh.harvard.edu
 for user in $@; do
-    echo "" | mailx -r $from -s "disk usage report" \
-        -a $SCRIPTDIR/_data/report.html \
+    echo "" | mailx -r $from -s "PNL disk usage report: $DATE  " \
+        -a $tmpdir/report.html \
         -- $user@bwh.harvard.edu
 done
+
+rm $tmpdir/report.html
+rmdir $tmpdir
