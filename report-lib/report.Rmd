@@ -15,7 +15,7 @@ ggplot(df, aes(x=date, y=UsageT)) +
     geom_line(aes(color=Filesystem), na.rm=T) +
     ggtitle("Filesystem Usage (Terabytes)") +
     geom_text(data=df.mostRecent, aes(label=UsageT, color=Filesystem),  hjust = 0.9, vjust = -0.6, na.rm=T, size=7) +
-    ylim(0,50) +
+    ylim(0,150) +
     theme(text = element_text(size=20))
 
 ```
