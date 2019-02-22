@@ -10,7 +10,7 @@ cp $SCRIPTDIR/_data/report.html $tmpdir/report.html
 
 DATE=$(date +"%Y%m%d")
 
-from=inorton@bwh.harvard.edu
+from=tbillah@bwh.harvard.edu
 for user in $@; do
     echo "" | mailx -r $from -s "PNL disk usage report: $DATE  " \
         -a $tmpdir/report.html \
