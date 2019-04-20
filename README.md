@@ -96,6 +96,7 @@ them directly from source:
 
 
 Another solution could be to install and activate devtoolset-3-toolchain before installing the above two.
+
 However, rest of the prerequisites should be directly installated in R:
 
   > install.packages('knitr', 'ggplot2', 'xtable', 'magrittr', 'lubridate', 'bit64')
