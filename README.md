@@ -88,12 +88,13 @@ The libraries are installed in `/usr/lib64/R/library/`
 a newer compiler than is available on CentOS 6. So, install an older version for 
 them directly from source:
 
+    ```
     wget https://github.com/tidyverse/lubridate/archive/v1.6.0.tar.gz
     sudo R CMD INSTALL v1.6.0.tar.gz  
       
-    https://github.com/Rdatatable/data.table/archive/1.11.4.tar.gz
+    wget https://github.com/Rdatatable/data.table/archive/1.11.4.tar.gz
     sudo R CMD INSTALL 1.11.4.tar.gz
-
+    ```
 
 Another solution could be to install and activate devtoolset-3-toolchain before installing the above two.
 
