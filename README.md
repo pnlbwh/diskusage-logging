@@ -2,6 +2,8 @@
 
 Whom can we blame for using all our disk space?  Find out here.
 
+Developed by Ryan Eckbo, Tashrif Billah, and Isaiah Norton
+
 Table of Contents
 =================
 
@@ -18,6 +20,8 @@ Table of Contents
       * [Make report](#make-report)
       * [Mail report](#mail-report)
    * [cron job scheduling](#cron-job-scheduling)
+      * [<em>cron.d</em> directory](#crond-directory)
+      * [User crontab](#user-crontab)
    * [Issues](#issues)
 
 Table of Contents Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
@@ -25,17 +29,17 @@ Table of Contents Created by [gh-md-toc](https://github.com/ekalinin/github-mark
 
 # Installation
 
-## Install *R* in Linux
+## 1. Install *R* in Linux
 
     sudo yum install R
     
-## Check installation (`/usr/bin/R`)
+## 2. Check installation (`/usr/bin/R`)
 
     which R
     R --help
     R # should initiate R console
 
-## Version
+## 3. Version
 
 Current *diskusage-logging* is on the following version of R:
     
@@ -70,7 +74,7 @@ Current *diskusage-logging* is on the following version of R:
     ...
 
     
-## Prerequisite libraries
+## 4. Prerequisite libraries
 The libraries are installed in `/usr/lib64/R/library/`
 
 
@@ -109,7 +113,7 @@ Put each file system's target directory (the one you're interested in) in a
 text file `_config/dirs.txt`, one per line. E.g.
 
     /rfanfs/pnl-zorro/
-    user@erisone.partners.org:/data/pnl
+    user@eris1n2.partners.org:/data/pnl
 
 * NOTE: replace user with whomever has sudo access.
     
@@ -129,7 +133,7 @@ disk usage changes.
 
 # Report
 
-## Make report
+## 1. Make report
 
 In `report-lib/` there's an R markdown document that generates a disk usage graph and a summary
 of last week's disk space changes.  Generate it by running
@@ -138,19 +142,44 @@ of last week's disk space changes.  Generate it by running
 
 which saves the report as `_data/report.html`. 
 
-## Mail report
+## 2. Mail report
 
 `mailreport.sh <partners_username1> <partners_username2> ...` emails a copy of the report to a
 list of PNL users.
 
 # cron job scheduling
 
-In order to monitor diskusage every week, the above procedure is run automatically 
-every week through `cron` job scheduling. Schedule the following in `root`'s `cron`:
+## 1. *cron.d* directory
 
-    $ sudo crontab -e
-    00 00 * * 6 /rfanfs/pnl-zorro/software/cron/weekly.sh
-    01 03 * * * /rfanfs/pnl-zorro/software/cron/daily.sh
+In order to monitor diskusage every week, the above procedure is run automatically 
+every week through `cron` job scheduling. Schedule the following in `pnl_crontab` file 
+and place it in `/etc/cron.d/` in `root`'s `cron`:
+    
+    # minute (0-59),
+    #    hour (0-23),
+    #       day of the month (1-31),
+    #          month of the year (1-12),
+    #             day of the week (0-6, 0=Sunday),
+    #               user
+    MAILTO=tbillah@bwh.harvard.edu
+    00 02 * * 6 tb571 /rfanfs/pnl-zorro/software/cron/weekly.sh
+    01 03 * * * tb571 /rfanfs/pnl-zorro/software/cron/daily.sh
+
+
+`MAILTO` sends all the output of `cron` job to the specified email address. However, `mail` should be 
+set up and functional. 
+
+## 2. User crontab
+
+Also, the above job can be put under a specific user's crontab:
+    
+    crontab -e
+
+However, both the above may experience permission issue of accessing some files 
+whose size we are trying to calculate. In that case, the job can be run with 
+administrative privilege:
+    
+    sudo crontab -e
     
 
 # Issues
