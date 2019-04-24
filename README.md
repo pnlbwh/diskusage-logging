@@ -9,20 +9,21 @@ Table of Contents
 
    * [diskusage-logging](#diskusage-logging)
    * [Installation](#installation)
-      * [Install <em>R</em> in Linux](#install-r-in-linux)
-      * [Check installation (/usr/bin/R)](#check-installation-usrbinr)
-      * [Version](#version)
-      * [Prerequisite libraries](#prerequisite-libraries)
+      * [1. Install <em>R</em> in Linux](#1-install-r-in-linux)
+      * [2. Check installation (/usr/bin/R)](#2-check-installation-usrbinr)
+      * [3. Version](#3-version)
+      * [4. Prerequisite libraries](#4-prerequisite-libraries)
    * [Configuration](#configuration)
    * [Running](#running)
    * [Output](#output)
    * [Report](#report)
-      * [Make report](#make-report)
-      * [Mail report](#mail-report)
+      * [1. Make report](#1-make-report)
+      * [2. Mail report](#2-mail-report)
    * [cron job scheduling](#cron-job-scheduling)
-      * [<em>cron.d</em> directory](#crond-directory)
-      * [User crontab](#user-crontab)
+      * [1. <em>cron.d</em> directory](#1-crond-directory)
+      * [2. User crontab](#2-user-crontab)
    * [Issues](#issues)
+
 
 Table of Contents Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -104,7 +105,7 @@ Another solution could be to install and activate devtoolset-3-toolchain before 
 
 However, rest of the prerequisites should be directly installated in R:
 
-  > install.packages('knitr', 'ggplot2', 'xtable', 'magrittr', 'lubridate', 'bit64')
+  > install.packages('knitr', 'ggplot2', 'xtable', 'magrittr', 'bit64')
 
 
 # Configuration
