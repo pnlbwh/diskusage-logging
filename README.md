@@ -76,7 +76,8 @@ Current *diskusage-logging* is on the following version of R:
 
     
 ## 4. Prerequisite libraries
-The libraries are installed in `/usr/lib64/R/library/`
+The following libraries are installed in `/usr/lib64/R/library/` (you can check version info
+with `packageVersion("knitr")`:
 
 
     knitr      = 1.22
@@ -90,7 +91,7 @@ The libraries are installed in `/usr/lib64/R/library/`
     
 
 * NOTE: the current version of `lubridate` and `data.table` in CRAN, requires 
-a newer compiler than is available on CentOS 6. So, install an older version for 
+a newer compiler than is available on CentOS 6. If required, you can install an older version of 
 them directly from source:
 
 ```
