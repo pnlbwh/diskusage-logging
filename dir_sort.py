@@ -5,7 +5,8 @@ import sys
 from os.path import isdir
 
 def usage():
-    print('Usage: ./dir_sort.py infoFile.csv outSummary.csv /abs/path/of/parent/dir/*')
+    print('Usage:  ./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*/`\n'
+          '\t./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*`')
     exit()
 
 def main():
@@ -23,10 +24,11 @@ def main():
         usage()
 
     if len(dirs)<2:
-        print('provide a list of directories, not the parent directory only, may be you forgot an * at the end?')
+        print('provide a list of directories, not the parent directory only, may be you forgot an */ at the end?')
         usage()
-
-    dirs= [dir for dir in dirs if isdir(dir)]
+    
+    # checking for directories will fail for remote servers
+    # dirs= [dir for dir in dirs if isdir(dir)]
     df= pd.read_csv(infoFile)
 
     df_parent= pd.DataFrame(columns= ['Directory', 'SizeG'])
@@ -47,7 +49,9 @@ if __name__=='__main__':
     main()
 
 '''
-./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv Collaborators.csv `ls -d /rfanfs/pnl-zorro/Collaborators/*`
-./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv projects.csv `ls -d /rfanfs/pnl-zorro/projects/*`
-./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv home.csv `ls -d /rfanfs/pnl-zorro/home/*`
+./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv Collaborators.csv `ls -d /rfanfs/pnl-zorro/Collaborators/*/`
+./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv projects.csv `ls -d /rfanfs/pnl-zorro/projects/*/`
+./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv home.csv `ls -d /rfanfs/pnl-zorro/home/*/`
+./dir_sort.py _data/logdirsizes/data_pnl-dirsizes-3-20190615.csv data_pnl.csv `ssh eris1n2.research.partners.org "ls -d /data/pnl/*/"`
 '''
+
