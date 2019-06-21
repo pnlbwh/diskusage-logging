@@ -4,8 +4,7 @@ SCRIPT=$(readlink -m $(type -p $0))
 SCRIPTDIR=$(dirname $SCRIPT)
 logdir=$SCRIPTDIR/_data/logdirsizes
 
-#datestamp=$(date +"%Y%m%d")
-datestamp="20190615"
+datestamp=$(date +"%Y%m%d")
 depth=3
 summarydir=$SCRIPTDIR/_data/logdirsummary/$datestamp
 mkdir -p $summarydir
