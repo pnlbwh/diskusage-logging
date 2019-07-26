@@ -50,7 +50,10 @@ do
     else
         remote=true
     fi
-    
+
+    # remove trailing slash from directory name
+    directory=${directory%/}
+
     logfile=$(logfilename $directory $depth)
 
 
