@@ -5,8 +5,12 @@ import sys
 from os.path import isdir
 
 def usage():
-    print('Usage:  ./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*/`\n'
-          '\t./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*`')
+    print('''Usage:  
+# for all subdirectories in dir
+./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*/`
+# for all files in dir`
+./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*`''')
+
     exit()
 
 def main():
