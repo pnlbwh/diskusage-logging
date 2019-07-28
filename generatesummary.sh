@@ -19,8 +19,14 @@ logfilename() {
     local dir=$1
     local depth=$2
     local prefix=$(findprefix $dir)
-    local logfile=${prefix}-dirsizes-${depth}-${datestamp}.csv
-    echo $logdir/$logfile
+    
+    # logfile with current datestamp might not exist
+    # local logfile=${prefix}-dirsizes-${depth}-${datestamp}.csv
+    
+    # so list the logfiles and use the latest one
+    IFS=' ', read -ra logfiles <<< `ls $logdir/${prefix}*${depth}*csv`
+    
+    echo ${logfiles[-1]}
 }
 
 remote_server() {
@@ -55,7 +61,7 @@ do
     directory=${directory%/}
 
     logfile=$(logfilename $directory $depth)
-
+    echo Using logfile $logfile
 
     for subdir in $directory $directory/home $directory/Collaborators $directory/projects
     do  
