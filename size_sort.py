@@ -5,11 +5,12 @@ import sys
 from os.path import isdir
 
 def usage():
-    print('''Usage:  
+    print('''Organize directories according to last access date.
+Usage:  
 # for all subdirectories in dir
-./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*/`
-# for all files in dir`
-./dir_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*`''')
+./size_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*/`
+# for all files in dir
+./size_sort.py infoFile.csv outSummary.csv `ls -d /abs/path/of/parent/dir/*`''')
 
     exit()
 
@@ -35,14 +36,12 @@ def main():
     # dirs= [dir for dir in dirs if isdir(dir)]
     df= pd.read_csv(infoFile)
 
-    df_parent= pd.DataFrame(columns= ['Directory', 'SizeG'])
+    df_parent= pd.DataFrame(columns= ['Directory', 'SizeG', 'Last Modified'])
     for j,dir in enumerate(dirs):
-        space= 0.
-        for i,name in enumerate(df.values[:,3]):
-            if dir in name:
-                space+=df.values[:,2][i]
+        for i,name in enumerate(df[' Directory']):
+            if dir==name+'/':
+                df_parent.loc[j]= [dir,df[' SizeG'][i],df[' Last Modified'][i]]
 
-        df_parent.loc[j]= [dir,space/2.]
 
     df_parent.sort_values(by=['SizeG'], ascending=False, inplace= True)
     df_parent.set_index('Directory', inplace=True)
@@ -53,9 +52,9 @@ if __name__=='__main__':
     main()
 
 '''
-./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv Collaborators.csv `ls -d /rfanfs/pnl-zorro/Collaborators/*/`
-./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv projects.csv `ls -d /rfanfs/pnl-zorro/projects/*/`
-./dir_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv home.csv `ls -d /rfanfs/pnl-zorro/home/*/`
-./dir_sort.py _data/logdirsizes/data_pnl-dirsizes-3-20190615.csv data_pnl.csv `ssh eris1n2.research.partners.org "ls -d /data/pnl/*/"`
+./size_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv Collaborators.csv `ls -d /rfanfs/pnl-zorro/Collaborators/*/`
+./size_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv projects.csv `ls -d /rfanfs/pnl-zorro/projects/*/`
+./size_sort.py _data/logdirsizes/rfanfs_pnl-zorro-dirsizes-3-20190506.csv home.csv `ls -d /rfanfs/pnl-zorro/home/*/`
+./size_sort.py _data/logdirsizes/data_pnl-dirsizes-3-20190615.csv data_pnl.csv `ssh eris1n2.research.partners.org "ls -d /data/pnl/*/"`
 '''
 

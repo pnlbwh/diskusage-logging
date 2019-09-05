@@ -70,10 +70,14 @@ do
         if [ "$remote" = true ]
         then
             # local directories
-            $SCRIPTDIR/dir_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
+            $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
+
+            # $SCRIPTDIR/date_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
         else
             # remote directories
-            $SCRIPTDIR/dir_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
+            $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
+
+            # $SCRIPTDIR/date_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
         fi
         
         
@@ -103,6 +107,11 @@ do
     echo "" | mailx -r $from -s "Categorized spread sheet for disk usage: $datestamp  " \
         -a  $summaryzip\
         -- $user@bwh.harvard.edu
+
+#    echo "" | mailx -r $from -s "Last-access-date sorted spread sheet for disk usage: $datestamp  " \
+#        -a  $summaryzip\
+#        -- $user@bwh.harvard.edu
+
 done
 
 cd $dir_bak
