@@ -102,7 +102,7 @@ zip -r $summaryzip $datestamp/
 
 # mail the summary
 from=tbillah@bwh.harvard.edu
-for user in tbillah sylvain mglyons
+for user in tbillah sylvain eknyazhanskaya
 do
     echo "" | mailx -r $from -s "Categorized spread sheet for disk usage: $datestamp  " \
         -a  $summaryzip\
