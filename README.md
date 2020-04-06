@@ -19,6 +19,7 @@ Table of Contents
    * [Report](#report)
       * [1. Make report](#1-make-report)
       * [2. Mail report](#2-mail-report)
+      * [3. Categorized spreadsheet](#3-categorized-spreadsheet)   
    * [cron job scheduling](#cron-job-scheduling)
       * [1. <em>cron.d</em> directory](#1-crond-directory)
       * [2. User crontab](#2-user-crontab)
@@ -138,16 +139,24 @@ disk usage changes.
 ## 1. Make report
 
 In `report-lib/` there's an R markdown document that generates a disk usage graph and a summary
-of last week's disk space changes.  Generate it by running
+of last week's disk space changes. Generate it by running:
 
     makereport.sh
 
-which saves the report as `_data/report.html`. 
+which saves the report as `_data/htmlreport/report-*.html`. 
 
 ## 2. Mail report
 
-`mailreport.sh <partners_username1> <partners_username2> ...` emails a copy of the report to a
-list of PNL users.
+Email a copy of the report to a list of PNL users:
+
+    mailreport.sh <partners_username1> <partners_username2> ...
+
+## 3. Categorized spreadsheet
+
+Apart from generating html summary, you can also generate a spreadsheet of size-sorted entitities. 
+Generate and email it by running:
+
+    generatesummary.sh <partners_username1> <partners_username2> ...
 
 # cron job scheduling
 
