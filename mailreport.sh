@@ -10,12 +10,13 @@ tmpdir=$(mktemp -d)
 datestamp=$(date +"%Y%m%d")
 cp $SCRIPTDIR/_data/htmlreport/report-${datestamp}.html $tmpdir/
 
-from=tbillah@bwh.harvard.edu
+domain=@partners.org
+from=tbillah$domain
 for user in $@
 do
     echo "" | mailx -r $from -s "PNL disk usage report: $datestamp  " \
         -a $tmpdir/*.html \
-        -- $user@bwh.harvard.edu
+        -- $user$domain
 done
 
 rm -r $tmpdir

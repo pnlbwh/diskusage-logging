@@ -101,16 +101,17 @@ zip -r $summaryzip $datestamp/
 
 
 # email the summary
-from=tbillah@bwh.harvard.edu
+domain=@partners.org
+from=tbillah$domain
 for user in $@
 do
     echo "" | mailx -r $from -s "Categorized spread sheet for disk usage: $datestamp  " \
         -a  $summaryzip\
-        -- $user@bwh.harvard.edu
+        -- $user$domain
 
 #    echo "" | mailx -r $from -s "Last-access-date sorted spread sheet for disk usage: $datestamp  " \
 #        -a  $summaryzip\
-#        -- $user@bwh.harvard.edu
+#        -- $user$domain
 
 done
 
