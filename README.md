@@ -158,6 +158,13 @@ Generate and email it by running:
 
     generatesummary.sh <partners_username1> <partners_username2> ...
 
+**NOTE** To integrate recipients of [#2](#2-mail-report) and [#3](#3-categorized-spreadsheet), they can be defined via a variable:
+
+    recipients="partners_username1 partners_username2 ..."
+    mailreport.sh $recipients
+    generatesummary.sh $recipients
+
+
 # cron job scheduling
 
 ## 1. *cron.d* directory
