@@ -69,12 +69,12 @@ do
         
         if [ "$remote" = true ]
         then
-            # local directories
+            # remote directories
             $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
 
             # $SCRIPTDIR/date_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
         else
-            # remote directories
+            # local directories
             $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
 
             # $SCRIPTDIR/date_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
