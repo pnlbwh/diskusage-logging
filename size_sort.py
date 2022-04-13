@@ -35,12 +35,12 @@ def main():
     # checking for directories will fail for remote servers
     # dirs= [dir for dir in dirs if isdir(dir)]
     df= pd.read_csv(infoFile)
-
+    
     df_parent= pd.DataFrame(columns= ['Directory', 'SizeG', 'Last Modified'])
     for j,dir in enumerate(dirs):
         for i,name in enumerate(df[' Directory']):
             if dir==name+'/':
-                df_parent.loc[j]= [dir,df[' SizeG'][i],df[' Last Modified'][i]]
+                df_parent.loc[j]= [dir,round(df[' SizeG'][i],ndigits=2),df[' Last Modified'][i]]
 
 
     df_parent.sort_values(by=['SizeG'], ascending=False, inplace= True)
