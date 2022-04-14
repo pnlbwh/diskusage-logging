@@ -3,6 +3,7 @@
 import pandas as pd
 import sys
 from os.path import isdir
+import os
 
 def usage():
     print('''Organize directories according to last access date.
@@ -32,15 +33,34 @@ def main():
         print('provide a list of directories, not the parent directory only, may be you forgot an */ at the end?')
         usage()
     
-    # checking for directories will fail for remote servers
-    # dirs= [dir for dir in dirs if isdir(dir)]
+
+    # read list of people at PNL since time immemorial
+    dpeople= pd.read_csv('user_name.csv')
+    dpeople.set_index(['uid','gid'], inplace=True)
+
     df= pd.read_csv(infoFile)
     
-    df_parent= pd.DataFrame(columns= ['Directory', 'SizeG', 'Last Modified'])
+    df_parent= pd.DataFrame(columns= ['Directory', 'SizeG', 'Owner', 'Last Modified'])
     for j,dir in enumerate(dirs):
         for i,name in enumerate(df[' Directory']):
             if dir==name+'/':
-                df_parent.loc[j]= [dir,round(df[' SizeG'][i],ndigits=2),df[' Last Modified'][i]]
+
+                # obtain its ownership info
+                stat= os.stat(dir)
+                try:
+                    owner= dpeople.loc[(stat.st_uid, stat.st_gid)]
+                except:
+                    class owner:
+                        name=''
+                        user=''
+
+                df_parent.loc[j]= [
+                    dir,
+                    round(df[' SizeG'][i],ndigits=2),
+                    owner.name,
+                    df[' Last Modified'][i]
+                ]
+            
 
 
     df_parent.sort_values(by=['SizeG'], ascending=False, inplace= True)
