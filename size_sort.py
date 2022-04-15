@@ -34,9 +34,9 @@ def main():
         usage()
     
 
-    # read list of people at PNL since time immemorial
+    # read list of people ever been at PNL
     dpeople= pd.read_csv('user_name.csv')
-    dpeople.set_index(['uid','gid'], inplace=True)
+    dpeople.set_index('uid', inplace=True)
 
     df= pd.read_csv(infoFile)
     
@@ -44,20 +44,24 @@ def main():
     for j,dir in enumerate(dirs):
         for i,name in enumerate(df[' Directory']):
             if dir==name+'/':
-
+                
                 # obtain its ownership info
                 stat= os.stat(dir)
                 try:
-                    owner= dpeople.loc[(stat.st_uid, stat.st_gid)]
+                    owner= dpeople.loc[stat.st_uid]
+                    if pd.isna(owner.fname):
+                        # if name does not exist, populate user ID
+                        owner.fname=owner.user
+
                 except:
                     class owner:
-                        name=''
+                        fname=''
                         user=''
 
                 df_parent.loc[j]= [
                     dir,
                     round(df[' SizeG'][i],ndigits=2),
-                    owner.name,
+                    owner.fname,
                     df[' Last Modified'][i]
                 ]
             
