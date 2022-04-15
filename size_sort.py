@@ -2,7 +2,7 @@
 
 import pandas as pd
 import sys
-from os.path import isdir
+from os.path import isdir, dirname, abspath, join as pjoin
 import os
 
 def usage():
@@ -35,7 +35,7 @@ def main():
     
 
     # read list of people ever been at PNL
-    dpeople= pd.read_csv('user_name.csv')
+    dpeople= pd.read_csv(pjoin(dirname(abspath(__file__)), 'user_name.csv'))
     dpeople.set_index('uid', inplace=True)
 
     df= pd.read_csv(infoFile)
