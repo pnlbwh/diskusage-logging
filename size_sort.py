@@ -4,6 +4,8 @@ import pandas as pd
 import sys
 from os.path import isdir, dirname, abspath, join as pjoin
 import os
+from subprocess import Popen, PIPE
+
 
 def usage():
     print('''Organize directories according to last access date.
@@ -36,7 +38,15 @@ def main():
 
     # read list of people ever been at PNL
     dpeople= pd.read_csv(pjoin(dirname(abspath(__file__)), 'user_name.csv'))
-    dpeople.set_index('uid', inplace=True)
+    
+    if '/rfanfs/' in dirs[1]:
+        # local folders
+        dpeople.set_index('uid', inplace=True)
+        remote=0
+    elif '/data/' in dirs[1]:
+        # remote folders
+        dpeople.set_index('user', inplace=True)
+        remote=1
 
     df= pd.read_csv(infoFile)
     
@@ -46,7 +56,18 @@ def main():
             if dir==name+'/':
                 
                 # obtain its ownership info
-                stat= os.stat(dir)
+                if not remote:
+                    stat= os.stat(dir)
+                else:
+                    with Popen(f"ssh tb571@eris1n2.research.partners.org \"ls -lad {dir}\"",
+                        shell=True, stdout=PIPE) as p:
+                        # b'drwxrws---. 72 ll598 BWH-PNL-G 12288 Apr  7 10:26 /data/pnl/home/\n'
+                        stdout= p.communicate()[0]
+                    
+                    uid= stdout.decode('utf-8').split()[2]
+                    class stat:
+                        st_uid= uid
+
                 try:
                     owner= dpeople.loc[stat.st_uid]
                     if pd.isna(owner.fname):
