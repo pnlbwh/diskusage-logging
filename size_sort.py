@@ -39,11 +39,10 @@ def main():
     # read list of people ever been at PNL
     dpeople= pd.read_csv(pjoin(dirname(abspath(__file__)), 'user_name.csv'))
     
-    if '/rfanfs/' in dirs[1]:
-        # local folders
-        dpeople.set_index('uid', inplace=True)
-        remote=0
-    elif '/data/' in dirs[1]:
+    # local folders
+    dpeople.set_index('uid', inplace=True)
+    remote=0
+    if '/data/' in dirs[1]:
         # remote folders
         dpeople.set_index('user', inplace=True)
         remote=1
