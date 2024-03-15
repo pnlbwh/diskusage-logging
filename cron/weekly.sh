@@ -6,7 +6,7 @@
 # make report
 /rfanfs/pnl-zorro/software/diskusage-logging/makereport.sh
 
-recipients="yrathi tbillah ojohn"
+recipients="yrathi tbillah ahaidar"
 
 # mail report
 /rfanfs/pnl-zorro/software/diskusage-logging/mailreport.sh $recipients
