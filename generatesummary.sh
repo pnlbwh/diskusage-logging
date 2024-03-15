@@ -72,12 +72,10 @@ do
             # remote directories
             $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
 
-            # $SCRIPTDIR/date_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
         else
             # local directories
             $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
 
-            # $SCRIPTDIR/date_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ls -d $subdir/*/`
         fi
         
         
@@ -108,10 +106,6 @@ do
     echo "" | mailx -r $from -s "Categorized spread sheet for disk usage: $datestamp  " \
         -a  $summaryzip\
         -- $user$domain
-
-#    echo "" | mailx -r $from -s "Last-access-date sorted spread sheet for disk usage: $datestamp  " \
-#        -a  $summaryzip\
-#        -- $user$domain
 
 done
 
