@@ -63,10 +63,10 @@ do
     logfile=$(logfilename $directory $depth)
     echo Using logfile $logfile
 
-    if [ $directory == /data/pnl/ ] || [ $directory == /data/pnlx/ ] || [ $directory == /rfanfs/pnl-zorro/ ]
+    if [ $directory == /data/pnl ] || [ $directory == /data/pnlx ] || [ $directory == /rfanfs/pnl-zorro ]
     then
         _dirs="$directory $directory/home $directory/Collaborators $directory/projects"
-    elif [ $directory == /data/predict1/ ]
+    elif [ $directory == /data/predict1 ]
     then
         _dirs="$directory $directory/data_from_nda $directory/data_from_nda_dev $directory/home"
     fi
