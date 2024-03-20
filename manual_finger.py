@@ -2,7 +2,7 @@
 
 # finger command is hard to work with via subprocess
 # so we generate the list of users as:
-# grep 12345 /etc/passwd > people.txt
+# ./manual_finger.sh
 
 import pandas as pd
 
@@ -18,6 +18,7 @@ for i,line in enumerate(lines):
     df.loc[i]= [parts[0],parts[4].split(',')[0],parts[2]]
 
 df.sort_values(by='user', inplace=True)    
+df.drop_duplicates(subset='user', inplace=True)
 
 df.to_csv('user_name.csv', index=False)
 
