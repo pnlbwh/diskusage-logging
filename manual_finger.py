@@ -6,7 +6,6 @@
 
 import pandas as pd
 
-# df= pd.DataFrame(columns=['user','fname','uid','gid'])
 df= pd.DataFrame(columns=['user','fname','uid'])
 
 with open('people.txt') as f:
@@ -14,7 +13,6 @@ with open('people.txt') as f:
 
 for i,line in enumerate(lines):
     parts= line.split(":")
-    # df.loc[i]= [parts[0],parts[4].split(',')[0],parts[2],parts[3]]
     df.loc[i]= [parts[0],parts[4].split(',')[0],parts[2]]
 
 df.sort_values(by='user', inplace=True)    
