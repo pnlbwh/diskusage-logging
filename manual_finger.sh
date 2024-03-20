@@ -10,6 +10,7 @@ _finger()
     done
 }
 
+cd /data/predict1/diskusage-logging/
 rm people.txt
 
 _finger pnl:x:10012:
