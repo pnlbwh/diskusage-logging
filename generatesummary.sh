@@ -4,6 +4,9 @@ SCRIPT=$(readlink -m $(type -p $0))
 SCRIPTDIR=$(dirname $SCRIPT)
 logdir=$SCRIPTDIR/_data/logdirsizes
 
+IFS=/ read -ra _rootdir <<< "$SCRIPTDIR"
+rootdir=${_rootdir[1]}
+
 datestamp=$(date +"%Y%m%d")
 depth=3
 summarydir=$SCRIPTDIR/_data/logdirsummary/$datestamp
@@ -101,9 +104,8 @@ dir_bak=`pwd`
 cd $tmpdir
 
 cp -a $summarydir .
-summaryzip=$datestamp.zip
+summaryzip=${rootdir}_${datestamp}.zip
 zip -r $summaryzip $datestamp/
-
 
 
 # email the summary
@@ -111,7 +113,7 @@ domain=@partners.org
 from=tbillah$domain
 for user in $@
 do
-    echo "" | mailx -r $from -s "Categorized spread sheet for disk usage: $datestamp  " \
+    echo "" | mailx -r $from -s "/$rootdir/ disk usage spreadsheets $datestamp" \
         -a  $summaryzip\
         -- $user$domain
 
