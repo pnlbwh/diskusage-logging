@@ -27,9 +27,7 @@ logfilename() {
     # local logfile=${prefix}-dirsizes-${depth}-${datestamp}.csv
     
     # so list the logfiles and use the latest one
-    IFS=' ', read -ra logfiles <<< `ls $logdir/${prefix}-dirsizes-${depth}*csv`
-    
-    echo ${logfiles[-1]}
+    ls $logdir/${prefix}-dirsizes-${depth}*csv | tail -n 1
 }
 
 remote_server() {
