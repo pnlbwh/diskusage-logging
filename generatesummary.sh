@@ -27,7 +27,7 @@ logfilename() {
     # local logfile=${prefix}-dirsizes-${depth}-${datestamp}.csv
     
     # so list the logfiles and use the latest one
-    IFS=' ', read -ra logfiles <<< `ls $logdir/${prefix}*${depth}*csv`
+    IFS=' ', read -ra logfiles <<< `ls $logdir/${prefix}-dirsizes-${depth}*csv`
     
     echo ${logfiles[-1]}
 }
