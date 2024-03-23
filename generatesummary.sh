@@ -47,7 +47,7 @@ remote_server() {
 
 # main function =======================
 
-while read path
+for path in $(cat $SCRIPTDIR/_config/dirs.txt)
 do     
     
     IFS=":" read server directory <<< $path
@@ -93,7 +93,7 @@ do
     done             
     
     
-done < $SCRIPTDIR/_config/dirs.txt
+done
 
 
 
