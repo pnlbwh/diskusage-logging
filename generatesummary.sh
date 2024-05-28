@@ -107,7 +107,7 @@ zip -r $summaryzip $datestamp/
 
 
 # email the summary
-domain=@partners.org
+domain=@mgb.org
 from=tbillah$domain
 for user in $@
 do
