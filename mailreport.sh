@@ -10,7 +10,7 @@ tmpdir=$(mktemp -d)
 datestamp=$(date +"%Y%m%d")
 cp $SCRIPTDIR/_data/htmlreport/report-${datestamp}.html $tmpdir/
 
-domain=@partners.org
+domain=@mgb.org
 from=tbillah$domain
 for user in $@
 do
