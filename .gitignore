@@ -6,3 +6,4 @@ figure/*
 *.csv
 report.md
 .idea
+**/.DS_Store
