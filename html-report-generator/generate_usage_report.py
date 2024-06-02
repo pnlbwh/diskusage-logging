@@ -9,6 +9,10 @@ from plot_usage_image import get_usage_chart
 from get_biggest_changes import get_biggest_change_HTML
 from get_biggest_dirs import get_table_and_chart_HTML
 
+# the following import is for preventing X forwarding error
+import matplotlib
+matplotlib.use('Agg')
+
 def usage():
     print ('''Create an HTML diskusage report for directories listed in _config/dirs.txt''')
 
