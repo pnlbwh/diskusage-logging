@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
 import datetime
-import sys
 import itertools
 from os.path import dirname, abspath, basename, join as pjoin
+
+# Use Agg non-interactive backend to prevent X forwarding error
+import matplotlib
+matplotlib.use('Agg')
 
 from plot_usage_image import get_usage_chart
 from get_biggest_changes import get_biggest_change_HTML
 from get_biggest_dirs import get_table_and_chart_HTML
 
-# the following import is for preventing X forwarding error
-import matplotlib
-matplotlib.use('Agg')
 
 def usage():
     print ('''Create an HTML diskusage report for directories listed in _config/dirs.txt''')
@@ -19,15 +19,12 @@ def usage():
 def main():
     current_date = datetime.datetime.now()
 
-    #data_path = sys.argv[1]
-    #file_path = sys.argv[2]
-
     # Defaults: working dir is 1 directory above where this file is located
     working_dir = abspath(pjoin(dirname(__file__),'..'))
 
     # Default relative paths for input data and output location
     data_path = pjoin(working_dir, '_data/')
-    file_path = pjoin(working_dir, '_data/', 'htmlreport/') + 'report-' + current_date.strftime("%Y%m%d") + '.html'
+    
     logdf_path = data_path + 'logdf/'
     logdirsizes_path = data_path + 'logdirsizes/'
 
@@ -35,6 +32,13 @@ def main():
     config_file_path = pjoin(working_dir, '_config/') + 'dirs.txt'
     with open(config_file_path, 'r') as file:
         dir_list = [line.strip() for line in file]
+
+
+    # Get the name of the filesystem from config.txt
+    filesystem_name = dir_list[0].split('/')[1]
+
+    # Title report file as report-data-{datestamp}.html or report-rfanfs-{datestamp}.html
+    file_path = f"{pjoin(working_dir, '_data/', 'htmlreport/')}report-{filesystem_name}-{current_date:%Y%m%d}.html"    
 
     # ------------------------------------
     # Configure Usage v. Time Step Chart:
@@ -141,7 +145,6 @@ def main():
 
     # Write the HTML content to the file
     with open(file_path, 'w') as file:
-        #pass
         file.write(html_content)
 
 if __name__ == '__main__':
