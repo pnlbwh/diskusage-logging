@@ -102,6 +102,7 @@ def get_top_chart(logfile_directory, logfile_prefix, directory_prefix):
 """
 Return HTML for the table/pie chart row
 """
+
 def get_table_and_chart_HTML(logfile_directory, logfile_prefix, directory_prefix):
 
     # Turn the subdir into an html-compatible id
@@ -118,7 +119,7 @@ def get_table_and_chart_HTML(logfile_directory, logfile_prefix, directory_prefix
         # Get 10 subdirectories, convert to html table
         subdir_size_list = (get_top_table(logfile_directory, logfile_prefix, subdir_path, 10))
         sub_table_html = subdir_size_list.to_html(index=False)
-        # Aadd a directory-specific id and make it hidden
+        # Add a directory-specific id and make it hidden
         sub_tables_html.append(f'<div id="subtable{safe_subdir}_{i}" style="display:none; height: 400px;">{sub_table_html}</div>')
 
     # Add 'clickable' property to make hyperlinks, then convert table to html
@@ -137,23 +138,42 @@ def get_table_and_chart_HTML(logfile_directory, logfile_prefix, directory_prefix
                 return;
             }
 
-            // if make sure tables are hidden in between clicks
-            var allSubtables = document.querySelectorAll('div[id^="subtable' + subdirPrefix + '_"]');
-            allSubtables.forEach(div => { div.style.display = 'none'; });
-
             var row = target.closest('tr');
             var rowIndex = Array.from(row.parentNode.children).indexOf(row);
 
-            // get the specific table by id
+            // get the specific subdirectory table by id
             var subtable = document.getElementById('subtable' + subdirPrefix + '_' + rowIndex);
-            if (subtable) {
+
+            // if this subtable is not displayed but its link is clicked (opening it for the first time)
+            if (subtable.style.display === 'none') {
+                // hide all other subtables
+                var allSubtables = document.querySelectorAll('div[id^="subtable' + subdirPrefix + '_"]');
+                allSubtables.forEach(div => { div.style.display = 'none'; });
+                
+                // show the clicked subtable
                 subtable.style.display = 'block';
                 
-                // get the heading above the table, and move it to the top of the page (revealing table) when link clicked
+                // get the heading above the table, and scroll it in to view when link clicked
                 var heading = document.getElementById('heading' + subdirPrefix);
                 if (heading) {
                     heading.scrollIntoView({behavior: 'smooth', block: 'start'});
                 }
+
+                // remove caret from links in the same table (prevents multiple carrets)
+                var allLinks = document.querySelectorAll('.clickable');
+                allLinks.forEach(link => {
+                        link.innerHTML = link.innerHTML.replace(' ▼', '');
+                });
+
+                // only add caret to indicate the open subtable
+                target.innerHTML = target.innerHTML + ' ▼';
+            
+            // runs if the subtable is currently displayed (closing the subtable)
+            } else {
+            
+                // hide the table, remove the caret
+                subtable.style.display = 'none';
+                target.innerHTML = target.innerHTML.replace(' ▼', '');
             }
         }
     </script>

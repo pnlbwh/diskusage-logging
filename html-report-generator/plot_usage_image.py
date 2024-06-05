@@ -25,12 +25,12 @@ def get_usage_chart(logdf_path, filesystems_to_monitor, defualt_lookback_window)
 
         # Add the annotation to the plot, where the position is x=last_date, y=last_value
         subplot_line.annotate(
-            f"{last_value}" + units,
+            f"{round(last_value)}",
             (last_date, last_value),
-            textcoords="offset points", xytext=(45,0),
-            fontsize=15, fontweight='bold', 
+            textcoords="offset points", xytext=(25,0),
+            fontsize=12, fontweight='medium', 
             ha='center', 
-            bbox=dict(boxstyle="round,pad=0.3", facecolor='white', edgecolor='black'))
+            bbox=dict(boxstyle="round,pad=0.3",edgecolor='none',facecolor='white', alpha=0.5))
 
 
     # Load usage data
