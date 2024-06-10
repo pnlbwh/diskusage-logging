@@ -1,3 +1,0 @@
-/data/pnl/
-/data/pnlx/
-/data/predict1/
