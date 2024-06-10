@@ -32,8 +32,7 @@ def main():
     config_file_path = pjoin(working_dir, '_config/') + 'dirs.txt'
     with open(config_file_path, 'r') as file:
 	# only add lines to dir_list that are non-empty
-        dir_list = [line.strip() for line in file if line.strip()]
-
+        dir_list = file.read().strip().split('\n')
 
     # Get the name of the filesystem from config.txt
     filesystem_name = dir_list[0].split('/')[1]
