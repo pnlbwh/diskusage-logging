@@ -95,7 +95,7 @@ def main():
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>Disk Report</title>
+        <title>Disk Usage Report</title>
         <style>
             body {{
                 padding-bottom: 50px;

@@ -3,6 +3,8 @@ import pandas as pd
 import os
 from get_closest_log import get_week_interval, extract_date
 
+# Only display changes over 10 GB magnitude
+DISPLAY_CHANGE_THRESHOLD_GB = 10
 
 """
 Returns DataFrame with directories ranked by decreasing size gain and the two dates corresponding to when
@@ -26,7 +28,8 @@ def get_sorted_df(directory_prefix, logfile_prefix, num_weeks):
     merged_df['Size Change (GB)'] = (merged_df[' SizeG_new'] - merged_df[' SizeG_old'])
 
     # Filtered out 
-    merged_df = merged_df[(merged_df['Size Change (GB)'] >= 0.01) | (merged_df['Size Change (GB)'] <= -0.01)]
+    merged_df = merged_df[(merged_df['Size Change (GB)'] >= DISPLAY_CHANGE_THRESHOLD_GB) 
+                          | (merged_df['Size Change (GB)'] <= -1*DISPLAY_CHANGE_THRESHOLD_GB)]
 
     # def get_percentage_change(new_size, old_size):
     #     if new_size == old_size:
