@@ -4,7 +4,7 @@ import os
 from get_closest_log import get_week_interval, extract_date
 
 # Only display changes over 10 GB magnitude
-DISPLAY_CHANGE_THRESHOLD_GB = 10
+CHANGE_THRESHOLD = 10
 
 """
 Returns DataFrame with directories ranked by decreasing size gain and the two dates corresponding to when
@@ -28,8 +28,8 @@ def get_sorted_df(directory_prefix, logfile_prefix, num_weeks):
     merged_df['Size Change (GB)'] = (merged_df[' SizeG_new'] - merged_df[' SizeG_old'])
 
     # Filtered out 
-    merged_df = merged_df[(merged_df['Size Change (GB)'] >= DISPLAY_CHANGE_THRESHOLD_GB) 
-                          | (merged_df['Size Change (GB)'] <= -1*DISPLAY_CHANGE_THRESHOLD_GB)]
+    merged_df = merged_df[(merged_df['Size Change (GB)'] >= CHANGE_THRESHOLD) 
+                          | (merged_df['Size Change (GB)'] <= -1*CHANGE_THRESHOLD)]
 
     # def get_percentage_change(new_size, old_size):
     #     if new_size == old_size:
@@ -74,20 +74,12 @@ def get_sorted_df(directory_prefix, logfile_prefix, num_weeks):
 def get_top_bottom_changes(sorted_df, is_increases=True):
     if is_increases:
         top_entries = sorted_df.head(5)
-        if (top_entries['Size Change (GB)'] > 0).all():
-            return top_entries
-        else:
-            return top_entries[top_entries['Size Change (GB)'] > 0]
+        return top_entries[top_entries['Size Change (GB)'] > CHANGE_THRESHOLD]
     else:
         # Reverse bottom entries to preserve magnitude
         bottom_entries = sorted_df.tail(5).iloc[::-1]
-        if (bottom_entries['Size Change (GB)'] < 0).all():
-            return bottom_entries
-        else:
-            return bottom_entries[bottom_entries['Size Change (GB)'] < 0]
+        return bottom_entries[bottom_entries['Size Change (GB)'] < CHANGE_THRESHOLD]
         
-
-
 """
 Returns HTML of the largest increases and decreases
 """
