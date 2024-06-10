@@ -31,7 +31,8 @@ def main():
     # Get directories to query from _config/dirs.txt
     config_file_path = pjoin(working_dir, '_config/') + 'dirs.txt'
     with open(config_file_path, 'r') as file:
-        dir_list = [line.strip() for line in file]
+	# only add lines to dir_list that are non-empty
+        dir_list = [line.strip() for line in file if line.strip()]
 
 
     # Get the name of the filesystem from config.txt
