@@ -90,10 +90,22 @@ def get_biggest_change_HTML(directory_prefix, logfile_prefix, num_weeks):
     # Gets the directory name from the top of the file
     dir_name = '/'.join(sorted_df.iloc[0]['Directory'].split('/')[:3]) + '/'
 
-    return f"""<h2>{num_weeks} Week Changes for {dir_name} ({
-            week2.strftime("%m-%d")} to {week1.strftime("%m-%d")}):</h2>
-        <h3> biggest increases</h3>
-        {get_top_bottom_changes(sorted_df,True).to_html(classes='tablestyle', index=False)}
-        <h3> biggest decreases</h3>
-        {get_top_bottom_changes(sorted_df,False).to_html(classes='tablestyle', index=False)}
+    # Adds classes to the table rows make the size consistent
+    def make_consistent_size(html_table):
+            # Add classes to the columns
+        html_table = html_table.replace(
+            '<th>', '<th class="col-0">', 1)  # Adding class to the first column header
+        html_table = html_table.replace(
+            '<th>', '<th class="col-1">', 1)  # Adding class to the second column header
+        html_table = html_table.replace(
+            '<th>', '<th class="col-2">', 1)  # Adding class to the third column header
+        return html_table
+
+    return f"""
+        <h2 style="width: 60%; text-align: left;">{num_weeks} week changes for {dir_name} ({ week2.strftime("%m-%d")} to {week1.strftime("%m-%d")}):</h2>
+        <h3> Biggest increases</h3>
+        {make_consistent_size(get_top_bottom_changes(sorted_df,True).to_html(classes='tablestyle', index=False))}
+        <h3> Biggest decreases</h3>
+        {make_consistent_size(get_top_bottom_changes(sorted_df,False).to_html(classes='tablestyle', index=False))}
+        
         """

@@ -125,6 +125,10 @@ def main():
             text-align: left;
             border: none;
         }}
+        .col-1, .col-2 {{
+            width: 150px; /* Adjust the width as needed */
+        }}
+        
         .clickable{{
             cursor: pointer;
             color: blue;
