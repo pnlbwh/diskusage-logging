@@ -1,0 +1,2 @@
+/rfanfs/pnl-zorro/
+tb571@eris1n3.research.partners.org:/data/pnl
