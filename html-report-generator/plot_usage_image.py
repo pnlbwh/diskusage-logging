@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import pandas as pd
+from pandas.plotting import register_matplotlib_converters
 import base64
 import itertools
-import pandas as pd
 from io import BytesIO
 
 from get_logdf_data import get_usage_data
 
+register_matplotlib_converters()
 
 # Returns base64 image data for step chart of daily usage data from logdf
 def get_usage_chart(logdf_path, dir_list, default_lookback_window, colors):

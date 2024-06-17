@@ -1,9 +1,11 @@
 import pandas as pd
+from pandas.plotting import register_matplotlib_converters
 import matplotlib.pyplot as plt
 from get_closest_log import get_closest_log
 import base64
 from io import BytesIO
 
+register_matplotlib_converters()
 
 # Returns a sorted size-sorted DataFrame of all the subdirectories based on the most recent log
 def get_sorted_df(logfile_directory, logfile_prefix, directory_prefix, is_ascending):

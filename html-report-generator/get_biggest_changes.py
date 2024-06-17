@@ -13,30 +13,39 @@ def get_sorted_df(directory_prefix, logfile_prefix, num_weeks, change_threshold)
     # Merge the two data frames with respect to Directory
     merged_df = pd.merge(df2, df1, on=' Directory', suffixes=('_old', '_new'), how='outer')
 
+    # Get directory name from file
+    dir_name = '/'.join(merged_df.iloc[0][' Directory'].split('/')[:3]) + '/'
+
     # Filling NaN values with 0 for calculations
     merged_df.fillna(0, inplace=True)
 
     # Calculating the size difference
     merged_df['Size Change (GB)'] = (merged_df[' SizeG_new'] - merged_df[' SizeG_old'])
 
-    # Filtered out 
+    # Filtered out
     merged_df = merged_df[(merged_df['Size Change (GB)'] >= change_threshold)
                           | (merged_df['Size Change (GB)'] <= -1 * change_threshold)]
 
-    # Filter to only look 5 directories in
-    merged_df = merged_df[
-        merged_df[' Directory'].apply(
-            lambda dirname: dirname.count('/') == 5)
-    ]
+    if not merged_df.empty:
+        # Filter to only look 5 directories in
+        merged_df = merged_df[
+            merged_df[' Directory'].apply(
+                lambda dirname: dirname.count('/') == 5)
+        ]
 
     # Sorting by 'size_increase' in descending order
     merged_df.sort_values('Size Change (GB)', ascending=False, inplace=True)
 
-    return merged_df, extract_date(week1_file), extract_date(week2_file)
+    return merged_df, extract_date(week1_file), extract_date(week2_file), dir_name
 
 
-# Function returns top 5 largest movers, omitting rows with 0 size change and formatting
+# Function returns top 5 largest movers (either increases or decreases), omitting rows below specified change threshold
 def get_top_bottom_changes(sorted_df, change_threshold, is_increases=True):
+
+    # if the dataframe empty, don't do anything
+    if sorted_df.empty:
+        return sorted_df
+
     if is_increases:
         output_df = sorted_df.head(5)[sorted_df.head(5)['Size Change (GB)'] > change_threshold]
     else:
@@ -53,9 +62,8 @@ def get_top_bottom_changes(sorted_df, change_threshold, is_increases=True):
 # Returns 5 largest increases and decreases, the two dates for which they were measured,
 # the directory name, and the number of weeks it was able to query
 def get_biggest_changes(directory_prefix, logfile_prefix, num_weeks, change_threshold):
-    sorted_df, week1, week2 = get_sorted_df(directory_prefix, logfile_prefix, num_weeks, change_threshold)
 
-    dir_name = '/'.join(sorted_df.iloc[0][' Directory'].split('/')[:3]) + '/'
+    sorted_df, week1, week2, dir_name = get_sorted_df(directory_prefix, logfile_prefix, num_weeks, change_threshold)
 
     return (get_top_bottom_changes(sorted_df, change_threshold, True),
             get_top_bottom_changes(sorted_df, change_threshold, False),
