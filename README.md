@@ -4,110 +4,37 @@ Whom can we blame for using all our disk space?  Find out here.
 
 Developed by Ryan Eckbo, Tashrif Billah, and Isaiah Norton
 
-Table of Contents
-=================
-
-   * [diskusage-logging](#diskusage-logging)
-   * [Installation](#installation)
-      * [1. Install <em>R</em> in Linux](#1-install-r-in-linux)
-      * [2. Check installation (/usr/bin/R)](#2-check-installation-usrbinr)
-      * [3. Version](#3-version)
-      * [4. Prerequisite libraries](#4-prerequisite-libraries)
-   * [Configuration](#configuration)
-   * [Running](#running)
-   * [Output](#output)
-   * [Report](#report)
-      * [1. Make report](#1-make-report)
-      * [2. Mail report](#2-mail-report)
-      * [3. Categorized spreadsheet](#3-categorized-spreadsheet)   
-   * [cron job scheduling](#cron-job-scheduling)
-      * [1. <em>cron.d</em> directory](#1-crond-directory)
-      * [2. User crontab](#2-user-crontab)
-   * [Issues](#issues)
-
-
-Table of Contents Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
-
 
 # Installation
 
-## 1. Install *R* in Linux
+## 1. Create virtual environment (optional)
+Using [Miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html), create a new conda environment:
 
-    sudo yum install R
-    
-## 2. Check installation (`/usr/bin/R`)
-
-    which R
-    R --help
-    R # should initiate R console
-
-## 3. Version
-
-Current *diskusage-logging* is on the following version of R:
-    
-    > version
-    
-    platform       x86_64-redhat-linux-gnu
-    arch           x86_64
-    os             linux-gnu
-    system         x86_64, linux-gnu
-    status
-    major          3
-    minor          5.2
-    year           2018
-    month          12
-    day            20
-    svn rev        75870
-    language       R
-    version.string R version 3.5.2 (2018-12-20)
-    nickname       Eggshell Igloo
-
-    > sessionInfo()
-    
-    sessionInfo()
-    R version 3.5.2 (2018-12-20)
-    Platform: x86_64-redhat-linux-gnu (64-bit)
-    Running under: CentOS release 6.8 (Final)
-
-    Matrix products: default
-    BLAS: /usr/lib64/R/lib/libRblas.so
-    LAPACK: /usr/lib64/R/lib/libRlapack.so
-    ...
-    ...
-
-    
-## 4. Prerequisite libraries
-The following libraries are installed in `/usr/lib64/R/library/` (you can check version info
-with `packageVersion("knitr")`:
-
-
-    knitr      = 1.22
-    ggplot2    = 3.1.1
-    xtable     = 1.8.3
-    magrittr   = 1.5
-    knitr      = 1.22
-    bit64      = 0.9.7
-    lubridate  = 1.6.0
-    data.table = 1.11.5
-    
-
-* NOTE: the current version of `lubridate` and `data.table` in CRAN, requires 
-a newer compiler than is available on CentOS 6. If required, you can install an older version of 
-them directly from source:
-
-```
-wget https://github.com/tidyverse/lubridate/archive/v1.6.0.tar.gz
-sudo R CMD INSTALL v1.6.0.tar.gz  
-  
-wget https://github.com/Rdatatable/data.table/archive/1.11.4.tar.gz
-sudo R CMD INSTALL 1.11.4.tar.gz
+```bash
+conda create --prefix /path/to/diskusage/env python=3.6.10
+conda activate /path/to/diskusage/env
 ```
 
-Another solution could be to install and activate devtoolset-3-toolchain before installing the above two.
+## 2. Install diskusage-logging and required packages
 
-However, rest of the prerequisites should be directly installated in R:
+```bash
+cd ${HOME}
+git clone https://github.com/colinjennings/diskusage-logging.git
+cd diskusage-logging
+pip install -r requirements.txt
+```
 
-  > install.packages(c('knitr', 'ggplot2', 'xtable', 'magrittr', 'bit64'))
+## 4. Versions
+Current *diskusage-logging* is on the following version of Python:
+
+    Python 3.6.10 |Anaconda, Inc.| (default, May  8 2020, 02:54:21)
+    [GCC 7.3.0] on linux
+
+Package versions: (check version info with `pip freeze`)
+
+    Jinja2==3.0.3
+    matplotlib==3.3.4
+    pandas==1.1.5
 
 
 # Configuration
@@ -119,31 +46,54 @@ text file `_config/dirs.txt`, one per line. E.g.
     user@eris1n2.partners.org:/data/pnl
 
 * NOTE: replace user with whomever has sudo access.
+
+Modify `html-report-generator/generate_usage_report.py` to change defaults in the html report.
     
 # Running
 
+## Scripts
     logbigfiles <dir> # finds files > 300M in <dir>, writes csv output to _data/logbigfiles/
+
     logdirsizes <dir> # writes directory sizes in `<dir>` (default depth 3) to `_data/logdirsizes/`
+
     logdirsizesall # calls `logdirsizes` for each directory in _config file `_config/dirs.txt`
+
     mydf # prints file system usage for each directory in _config file `_config/dirs.txt`
+
     logdf # writes `mydf` output to `_data/logdf/`
 
-# Output
+## Script Output
 
 Each script generates a csv file when you run it, and saves it to its log directory.
-`logdirsizesall` and `logdf` should be run regularly to get a revealing profile of
-disk usage changes.
+
+`logdf` should be run more frequently (~daily) to get a generalized view of total disk usage trends
+
+`logdirsizesall` should be run less frequently (~weekly) to get a more nuanced view of disk usage of individual directories
 
 # Report
 
 ## 1. Make report
 
-In `report-lib/` there's an R markdown document that generates a disk usage graph and a summary
-of last week's disk space changes. Generate it by running:
+The python file `html-report-generator/generate_usage_report.py` generates an HTML report with detailed diskusage data. Run it like this:
 
-    makereport.sh
+```bash
+conda activate /path/to/diskusage/env
+python html-report-generator/generate_usage_report.py
+```
 
-which saves the report as `_data/htmlreport/report-*.html`. 
+This saves the report as `_data/htmlreport/report-{filesystem_name}-{date}.html`. 
+
+### To run this in a bash script where python/conda is not installed system-wide (i.e. when using cron):
+
+First, allow executable:
+```bash
+chmod +x html-report-generator/generate_usage_report.py
+```
+Every time you want it to run:
+```bash
+export PATH=/path/to/diskusage/env/bin/:$PATH
+html-report-generator/generate_usage_report.py
+```
 
 ## 2. Mail report
 
@@ -186,6 +136,7 @@ and place it in `/etc/cron.d/` in `root`'s `cron`:
 
 `MAILTO` sends all the output of `cron` job to the specified email address. However, `mail` should be 
 set up and functional. 
+
 
 ## 2. User crontab
 
