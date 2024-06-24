@@ -61,7 +61,7 @@ template = env.get_template('disk_report_template.html')
 
 # Define context variables
 context = {
-    'report_date': current_date.strftime("%Y-%m-%d %H:%M"),
+    'report_date': current_date.strftime("%Y-%m-%d"),
     'step_img': get_usage_chart(logdf_path, dir_list, default_lookback_window, line_colors),
     'biggest_changes': [],
     'biggest_dirs': []
