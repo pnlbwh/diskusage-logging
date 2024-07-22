@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk Usage Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #fff;
+            color: #000;
+            padding-top: 30px;
+            min-height: 70px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            text-align: center;
+            margin: 0;
+            font-size: 36px;
+        }
+        h2 {
+            scroll-margin-top: 35px;
+        }
+        .chart, .table-section, .directory-section {
+            background: #fff;
+            padding: 20px;
+            margin: 40px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chart img, .directory img {
+            width: 100%;
+        }
+        .table-section table, .directory-section .directory-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+        .table-section th, .directory-section .directory-table th {
+            background-color: #f2f2f2;
+        }
+        .table-section th, .table-section td,
+        .directory-section .directory-table th, .directory-section .directory-table td {
+            padding: 8px; /* Reduced padding */
+            border: 1px solid #ddd;
+            text-align: left;
+            box-sizing: border-box;
+            height: 40px; /* Reduced height */
+        }
+        .table-section table th:nth-child(2), .table-section table td:nth-child(2),
+        .table-section table th:nth-child(3), .table-section table td:nth-child(3),
+        .directory-section table th:nth-child(2), .directory-section table td:nth-child(2),
+        .directory-section table th:nth-child(3), .directory-section table td:nth-child(3) {
+            width: 20%;
+            text-align: right;
+        }
+        .table-section table th:nth-child(1), .table-section table td:nth-child(1),
+        .directory-section table th:nth-child(1), .directory-section table td:nth-child(1) {
+            text-align: left;
+            width: 60%;
+        }
+        .directory-section .directory {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .directory-section .directory-table {
+            width: 55%;
+        }
+        .directory-section .directory img {
+            width: 45%;
+        }
+        .hidden-table {
+            margin-top: 20px;
+            height: 250px;
+            overflow-y: auto;
+            display: none;
+            text-align: left;
+        }
+        .hidden-table table {
+            width: 75%;
+        }
+        .caret {
+            font-size: 12px;
+            text-decoration: none;
+            color: black;
+        }
+        .clickable {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        .clickable:hover {
+            text-decoration: none; /* Optional: Change style on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Disk Usage Report for {{ report_date }}</h1>
+    </header>
+    <div class="container">
+        <div class="chart">
+            <img src="data:image/png;base64,{{step_img}}">
+        </div>
+        {% for change_card in biggest_changes %}
+        <div class="table-section">
+            <h2>{{change_card.num_weeks}} week changes for {{change_card.dirname}} ({{change_card.week2}} to {{change_card.week1}}):</h2>
+            <h3>Biggest Increases</h3>
+            <table>
+                <tr>
+                    <th>Directory</th>
+                    <th>Size Change (GB)</th>
+                    <th>New Size (GB)</th>
+                </tr>
+                {% for increase in change_card.increases %}
+                <tr>
+                    <td>{{increase[' Directory']}}</td>
+                    <td>{{increase['Size Change (GB)']}}</td>
+                    <td>{{increase[' SizeG_new']}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <h3>Biggest Decreases</h3>
+            <table>
+                <tr>
+                    <th>Directory</th>
+                    <th>Size Change (GB)</th>
+                    <th>New Size (GB)</th>
+                </tr>
+                {% for decrease in change_card.decreases %}
+                <tr>
+                    <td>{{decrease[' Directory']}}</td>
+                    <td>{{decrease['Size Change (GB)']}}</td>
+                    <td>{{decrease[' SizeG_new']}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+        {% for dir_card in biggest_dirs %}
+        <div class="directory-section">
+            <h2>{{dir_card.dirname}} Largest Directories</h2>
+            <div class="directory">
+                <div class="directory-table">
+                    <table>
+                        <tr>
+                            <th>Directory</th>
+                            <th>Size (GB)</th>
+                            <th>Last Modified</th>
+                        </tr>
+
+                        {% for subdir in dir_card.subdirs %}
+                        <tr>
+                            <td><span class="clickable">{{subdir[' Directory']}}</span></td>
+                            <td>{{subdir[' SizeG']}}</td>
+                            <td>{{subdir[' Last Modified']}}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+                <img src="data:image/png;base64,{{dir_card.img_data}}">
+            </div>
+            {% for subdir in dir_card.subdirs %}
+                    <div class="hidden-table">
+                        <table>
+                            <tr>
+                                <th>Directory</th>
+                                <th>Size (GB)</th>
+                                <th>Last Modified</th>
+                            </tr>
+                            {% for hidden_row in subdir.hidden_dirs %}
+                                <tr>
+                                    <td>{{hidden_row[' Directory']}}</td>
+                                    <td>{{hidden_row[' SizeG']}}</td>
+                                    <td>{{hidden_row[' Last Modified']}}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('.clickable');
+            const tables = document.querySelectorAll('.hidden-table');
+            let activeTable = null;
+
+            links.forEach((link, index) => {
+                const caret = document.createElement('span');
+                caret.className = 'caret';
+                caret.style.display = 'none';
+                caret.innerHTML = '&#9660;';
+                link.appendChild(caret);
+
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    if (activeTable === tables[index]) {
+                        tables[index].style.display = 'none';
+                        activeTable = null;
+                        caret.style.display = 'none';
+                    } else {
+                        tables.forEach((table, i) => {
+                            table.style.display = 'none';
+                            const caretToHide = links[i].querySelector('.caret');
+                            if (caretToHide) {
+                                caretToHide.style.display = 'none';
+                            }
+                        });
+                        tables[index].style.display = 'block';
+                        activeTable = tables[index];
+                        caret.style.display = 'inline';
+
+                        const heading = link.closest('.directory-section').querySelector('h2');
+                        heading.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
