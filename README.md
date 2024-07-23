@@ -2,11 +2,11 @@
 
 Whom can we blame for using all our disk space?  Find out here.
 
-Developed by Ryan Eckbo, Tashrif Billah, and Isaiah Norton
+Developed by Ryan Eckbo, Tashrif Billah, Isaiah Norton, and Colin Jennings
 
 
 # Installation
-## Install diskusage-logging and Packages
+
 ```bash
 git clone https://github.com/pnlbwh/diskusage-logging.git
 cd diskusage-logging
@@ -33,13 +33,14 @@ text file `_config/dirs.txt`, one per line. E.g.
     /rfanfs/pnl-zorro/
     user@eris1n2.partners.org:/data/pnl
 
-* NOTE: replace user with whomever has sudo access.
+* NOTE: replace `user` with whomever has sudo access.
 
 Modify `html-report-generator/generate_usage_report.py` to change defaults in the html report.
 
 # Running
 
 ## Scripts
+
     logbigfiles <dir> # finds files > 300M in <dir>, writes csv output to _data/logbigfiles/
 
     logdirsizes <dir> # writes directory sizes in `<dir>` (default depth 3) to `_data/logdirsizes/`
@@ -58,19 +59,12 @@ Each script generates a csv file when you run it, and saves it to its log direct
 
 `logdirsizesall` should be run less frequently (~weekly) to get a more nuanced view of disk usage of individual directories
 
-# Report
+## 1. Make report
 
 The python file `html-report-generator/generate_usage_report.py` generates an HTML report with detailed diskusage data.
 
-First, allow executable:
-```bash
-chmod +x html-report-generator/generate_usage_report.py
-```
-Every time you want it to run:
-```bash
-export PATH=/path/to/miniconda3/envs/diskusage/bin/
-html-report-generator/generate_usage_report.py
-```
+    export PATH=/path/to/miniconda3/envs/diskusage/bin/
+    html-report-generator/generate_usage_report.py
 
 This saves the report as `_data/htmlreport/report-{directory}-{date}.html`.
 
