@@ -5,20 +5,8 @@ Whom can we blame for using all our disk space?  Find out here.
 Developed by Ryan Eckbo, Tashrif Billah, and Isaiah Norton
 
 
-# Installation
-
-## 1. Create virtual environment (optional)
-Using [Miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html), create a new conda environment:
-
+# Install diskusage-logging and Packages
 ```bash
-conda create --prefix /path/to/diskusage/env python=3.6.10
-conda activate /path/to/diskusage/env
-```
-
-## 2. Install diskusage-logging and required packages
-
-```bash
-cd ${HOME}
 git clone https://github.com/pnlbwh/diskusage-logging.git
 cd diskusage-logging
 pip install -r requirements.txt
@@ -71,16 +59,7 @@ Each script generates a csv file when you run it, and saves it to its log direct
 
 # Report
 
-## 1. Make report
-
-The python file `html-report-generator/generate_usage_report.py` generates an HTML report with detailed diskusage data. Run it like this:
-
-```bash
-conda activate /path/to/diskusage/env
-python html-report-generator/generate_usage_report.py
-```
-
-This saves the report as `_data/htmlreport/report-{filesystem_name}-{date}.html`.
+The python file `html-report-generator/generate_usage_report.py` generates an HTML report with detailed diskusage data.
 
 ### To run this in a bash script where python/conda is not installed system-wide (i.e. when using cron):
 
@@ -90,9 +69,11 @@ chmod +x html-report-generator/generate_usage_report.py
 ```
 Every time you want it to run:
 ```bash
-export PATH=/path/to/diskusage/env/bin/:$PATH
+export PATH=/path/to/miniconda3/envs/diskusage/bin/
 html-report-generator/generate_usage_report.py
 ```
+
+This saves the report as `_data/htmlreport/report-{filesystem_name}-{date}.html`.
 
 ## 2. Mail report
 
@@ -131,7 +112,6 @@ and place it in `/etc/cron.d/` in `root`'s `cron`:
     MAILTO=tbillah@bwh.harvard.edu
     00 02 * * 6 tb571 /rfanfs/pnl-zorro/software/cron/weekly.sh
     01 03 * * * tb571 /rfanfs/pnl-zorro/software/cron/daily.sh
-
 
 `MAILTO` sends all the output of `cron` job to the specified email address. However, `mail` should be
 set up and functional.
