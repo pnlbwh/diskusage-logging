@@ -7,12 +7,22 @@ from os.path import dirname, abspath, join as pjoin
 from plot_usage_image import get_usage_chart
 from get_biggest_changes import get_biggest_changes
 from get_biggest_dirs import get_top_chart, get_top_table
+import sys
 
 # Use Agg non-interactive backend to prevent X forwarding error
 import matplotlib
 matplotlib.use('Agg')
 
 os.environ["OMP_NUM_THREADS"] = "1"
+
+
+if sys.argv[1]:
+    print(f'''Usage:
+{__file__}
+
+Simply execute this script after modifying _config/dirs.txt''')
+    exit()
+
 
 # -------------------------- SETUP --------------------------
 # Step chart setup -- line colors and number of months to look back
