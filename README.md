@@ -19,18 +19,17 @@ conda activate /path/to/diskusage/env
 
 ```bash
 cd ${HOME}
-git clone https://github.com/colinjennings/diskusage-logging.git
+git clone https://github.com/pnlbwh/diskusage-logging.git
 cd diskusage-logging
 pip install -r requirements.txt
 ```
 
-## 4. Versions
 Current *diskusage-logging* is on the following version of Python:
 
     Python 3.6.10 |Anaconda, Inc.| (default, May  8 2020, 02:54:21)
     [GCC 7.3.0] on linux
 
-Package versions: (check version info with `pip freeze`)
+Package versions:
 
     Jinja2==3.0.3
     matplotlib==3.3.4
@@ -48,7 +47,7 @@ text file `_config/dirs.txt`, one per line. E.g.
 * NOTE: replace user with whomever has sudo access.
 
 Modify `html-report-generator/generate_usage_report.py` to change defaults in the html report.
-    
+
 # Running
 
 ## Scripts
@@ -81,7 +80,7 @@ conda activate /path/to/diskusage/env
 python html-report-generator/generate_usage_report.py
 ```
 
-This saves the report as `_data/htmlreport/report-{filesystem_name}-{date}.html`. 
+This saves the report as `_data/htmlreport/report-{filesystem_name}-{date}.html`.
 
 ### To run this in a bash script where python/conda is not installed system-wide (i.e. when using cron):
 
@@ -103,7 +102,7 @@ Email a copy of the report to a list of PNL users:
 
 ## 3. Categorized spreadsheet
 
-Apart from generating html summary, you can also generate a spreadsheet of size-sorted entitities. 
+Apart from generating html summary, you can also generate a spreadsheet of size-sorted entitities.
 Generate and email it by running:
 
     generatesummary.sh <partners_username1> <partners_username2> ...
@@ -119,10 +118,10 @@ Generate and email it by running:
 
 ## 1. *cron.d* directory
 
-In order to monitor diskusage every week, the above procedure is run automatically 
-every week through `cron` job scheduling. Schedule the following in `pnl_crontab` file 
+In order to monitor diskusage every week, the above procedure is run automatically
+every week through `cron` job scheduling. Schedule the following in `pnl_crontab` file
 and place it in `/etc/cron.d/` in `root`'s `cron`:
-    
+
     # minute (0-59),
     #    hour (0-23),
     #       day of the month (1-31),
@@ -134,22 +133,21 @@ and place it in `/etc/cron.d/` in `root`'s `cron`:
     01 03 * * * tb571 /rfanfs/pnl-zorro/software/cron/daily.sh
 
 
-`MAILTO` sends all the output of `cron` job to the specified email address. However, `mail` should be 
-set up and functional. 
-
+`MAILTO` sends all the output of `cron` job to the specified email address. However, `mail` should be
+set up and functional.
 
 ## 2. User crontab
 
 Also, the above job can be put under a specific user's crontab:
-    
+
     crontab -e
 
-However, both the above may experience permission issue of accessing some files 
-whose size we are trying to calculate. In that case, the job can be run with 
+However, both the above may experience permission issue of accessing some files
+whose size we are trying to calculate. In that case, the job can be run with
 administrative privilege:
-    
+
     sudo crontab -e
-    
+
 
 # Issues
 
