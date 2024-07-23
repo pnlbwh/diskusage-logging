@@ -56,7 +56,7 @@ Modify `html-report-generator/generate_usage_report.py` to change defaults in th
     # writes `mydf` output to `_data/logdf/`
     logdf
 
-## Script Output
+## Output
 
 Each script generates a csv file when you run it, and saves it to its log directory.
 
