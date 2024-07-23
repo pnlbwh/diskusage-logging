@@ -4,6 +4,21 @@ Whom can we blame for using all our disk space?  Find out here.
 
 Developed by Ryan Eckbo, Tashrif Billah, Isaiah Norton, and Colin Jennings
 
+# Table of Contents
+
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Running](#running)
+   * [Scripts](#scripts)
+   * [Output](#output)
+   * [1. Make report](#1-make-report)
+   * [2. Mail report](#2-mail-report)
+   * [3. Categorized spreadsheet](#3-categorized-spreadsheet)
+* [cron job scheduling](#cron-job-scheduling)
+   * [1. <em>cron.d</em> directory](#1-crond-directory)
+   * [2. User crontab](#2-user-crontab)
+* [Issues](#issues)
+
 
 # Installation
 
