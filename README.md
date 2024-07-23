@@ -5,7 +5,8 @@ Whom can we blame for using all our disk space?  Find out here.
 Developed by Ryan Eckbo, Tashrif Billah, and Isaiah Norton
 
 
-# Install diskusage-logging and Packages
+# Installation
+## Install diskusage-logging and Packages
 ```bash
 git clone https://github.com/pnlbwh/diskusage-logging.git
 cd diskusage-logging
@@ -61,8 +62,6 @@ Each script generates a csv file when you run it, and saves it to its log direct
 
 The python file `html-report-generator/generate_usage_report.py` generates an HTML report with detailed diskusage data.
 
-### To run this in a bash script where python/conda is not installed system-wide (i.e. when using cron):
-
 First, allow executable:
 ```bash
 chmod +x html-report-generator/generate_usage_report.py
@@ -73,7 +72,7 @@ export PATH=/path/to/miniconda3/envs/diskusage/bin/
 html-report-generator/generate_usage_report.py
 ```
 
-This saves the report as `_data/htmlreport/report-{filesystem_name}-{date}.html`.
+This saves the report as `_data/htmlreport/report-{directory}-{date}.html`.
 
 ## 2. Mail report
 
