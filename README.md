@@ -41,15 +41,20 @@ Modify `html-report-generator/generate_usage_report.py` to change defaults in th
 
 ## Scripts
 
-    logbigfiles <dir> # finds files > 300M in <dir>, writes csv output to _data/logbigfiles/
+    # finds files > 300M in <dir>, writes csv output to `_data/logbigfiles/`
+    logbigfiles <dir>
 
-    logdirsizes <dir> # writes directory sizes in `<dir>` (default depth 3) to `_data/logdirsizes/`
+    # writes directory sizes in `<dir>` (default depth 3) to `_data/logdirsizes/`
+    logdirsizes <dir>
 
-    logdirsizesall # calls `logdirsizes` for each directory in _config file `_config/dirs.txt`
+    # calls `logdirsizes` for each directory in _config file `_config/dirs.txt`
+    logdirsizesall
 
-    mydf # prints file system usage for each directory in _config file `_config/dirs.txt`
+    # prints file system usage for each directory in _config file `_config/dirs.txt`
+    mydf
 
-    logdf # writes `mydf` output to `_data/logdf/`
+    # writes `mydf` output to `_data/logdf/`
+    logdf
 
 ## Script Output
 
