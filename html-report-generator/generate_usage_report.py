@@ -16,7 +16,7 @@ matplotlib.use('Agg')
 os.environ["OMP_NUM_THREADS"] = "1"
 
 
-if sys.argv[1]:
+if len(sys.argv) > 1:
     print(f'''Usage:
 {__file__}
 
