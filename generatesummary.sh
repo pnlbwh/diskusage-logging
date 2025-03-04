@@ -79,6 +79,7 @@ do
         if [ "$remote" = true ]
         then
             # remote directories
+            export REMOTE=1
             $SCRIPTDIR/size_sort.py $logfile $summarydir/${prefix}-${datestamp}.csv `ssh $server "ls -d $subdir/*/"`
 
         else
