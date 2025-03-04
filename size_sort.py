@@ -41,12 +41,8 @@ def main():
     
     # local folders
     dpeople.set_index('uid', inplace=True)
-    remote=0
-    if '/data/' in dirs[1]:
-        # remote folders
-        dpeople.set_index('user', inplace=True)
-        remote=1
-
+    remote=int(os.getenv('REMOTE',0))
+    
     df= pd.read_csv(infoFile)
     
     df_parent= pd.DataFrame(columns= ['Directory', 'SizeG', 'Owner', 'Last Modified'])
@@ -58,7 +54,7 @@ def main():
                 if not remote:
                     stat= os.stat(dir)
                 else:
-                    with Popen(f"ssh tb571@eris1n2.research.partners.org \"ls -lad {dir}\"",
+                    with Popen(f"ssh tb571@dna007.partners.org \"ls -lad {dir}\"",
                         shell=True, stdout=PIPE) as p:
                         # b'drwxrws---. 72 ll598 BWH-PNL-G 12288 Apr  7 10:26 /data/pnl/home/\n'
                         stdout= p.communicate()[0]
