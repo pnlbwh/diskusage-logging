@@ -50,8 +50,6 @@ if $remote; then
 else
     results=$(eval "$cmd")
 fi
-echo "results: "
-echo $results
 
 log=$(logfilename $dir $depth)
 if [ -n "${results-}" ]; then
