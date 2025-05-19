@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 SCRIPT=$(readlink -m $(type -p $0))
 SCRIPTDIR=$(dirname $SCRIPT)
@@ -113,7 +113,7 @@ from=tbillah$domain
 for user in $@
 do
     echo "" | mailx -r $from -s "/$rootdir/ disk usage spreadsheets $datestamp" \
-        -a  $summaryzip\
+        -a $summaryzip\
         -- $user$domain
 
 done
